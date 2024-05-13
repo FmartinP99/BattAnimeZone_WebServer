@@ -1,0 +1,19 @@
+﻿@inject NavigationManager navManager
+
+<RadzenRow Style="Margin-bottom:50px; Width:100%;">
+	<RadzenTextBox @bind-value="name_to_search" Style="flex:auto"></RadzenTextBox>
+	<RadzenButton Click="NavigateTo" Style="width: 100px; Margin-left:20px;" Text="Search"></RadzenButton>
+</RadzenRow>
+
+@code {
+	[Parameter]
+	public string name_to_search { get; set; }
+	[Parameter]
+	public EventCallback Search{ get; set; }
+
+	public async void NavigateTo()
+	{
+		navManager.NavigateTo($"/search/{name_to_search}");
+	}
+
+}

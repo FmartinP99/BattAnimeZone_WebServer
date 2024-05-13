@@ -1,0 +1,69 @@
+@inject NavigationManager navManager
+@using BattAnimeZone.Components.Models
+@using BattAnimeZone.Services
+@inject AnimeService animeService
+@page "/search/{name}"
+
+
+@if (this.similar_animes != null)
+foreach (Anime similar_anime in this.similar_animes)
+{
+    {
+            <RadzenRow @onclick=@(() => NavigateTo(similar_anime.Mal_id)) Style="height:100px; margin-bottom: 30px;">
+        <RadzenColumn Style="max-width:100px;">
+                    <RadzenImage Style="max-width:100px; max-height:100px;" Path="@similar_anime.Image_large_webp_url"></RadzenImage>
+        </RadzenColumn>
+        <RadzenColumn Style="max-width:100px;">
+            English Name: <br> @similar_anime.Title_english
+        </RadzenColumn>
+        <RadzenColumn Style="max-width:100px;">
+                    Japanese name: <br> @similar_anime.Title_japanese
+        </RadzenColumn>
+        <RadzenColumn Style="max-width:100px;">
+                    Type: <br> @similar_anime.Media_type
+        </RadzenColumn>
+        <RadzenColumn Style="max-width:100px;">
+            Episodes: <br> @similar_anime.Episodes
+        </RadzenColumn>
+        <RadzenColumn Style="max-width:100px;">
+            Score: <br> @similar_anime.Score
+        </RadzenColumn>
+        <RadzenColumn Style="max-width:100px;">
+            Year: <br> @similar_anime.Year
+        </RadzenColumn>
+        <RadzenColumn Style="max-width:100px;">
+                    Status: <br> @similar_anime.Status
+        </RadzenColumn>
+    </RadzenRow>
+
+    }
+}
+
+
+
+
+@code {
+    [Parameter]
+    public string name { get; set; }
+    List<Anime> similar_animes;
+    int similar_anime_number = 5;
+
+    protected override async Task OnInitializedAsync()
+    {
+        GetSimilarAnimes();
+        base.OnInitialized();
+    }
+
+    protected async void GetSimilarAnimes()
+    {
+        this.similar_animes = await animeService.GetSimilarAnimes(this.similar_anime_number, this.name);
+    }
+
+
+    protected async void NavigateTo(int mal_id)
+    {
+
+        navManager.NavigateTo($"/anime/{mal_id}");
+    }
+
+}

@@ -1,0 +1,97 @@
+@inject NavigationManager navManager
+@using BattAnimeZone.Components.Models
+@using BattAnimeZone.Services
+@inject AnimeService animeService
+@page "/anime/{mal_id:int}"
+
+@if (currentAnime.Mal_id == -1) NavigateToIndex();
+
+<div Style="padding: 2;">
+<PageTitle>AnimeView</PageTitle>
+<RadzenRow>
+    <RadzenColumn Size="12">
+        <RadzenText Text="Search" TextStyle="TextStyle.H3" TagName="TagName.H1" Style="height: 48px" TextAlign="Radzen.TextAlign.Center"/>
+    </RadzenColumn>
+</RadzenRow>
+
+<SearchBar></SearchBar>
+
+<RadzenRow Style="height:500px; flex:auto; Margin-bottom:30px;">
+        <RadzenImage Style="display: block; max-width: 300px; max-height: 500px; height:auto; width:auto;" Path="@currentAnime.Image_large_webp_url"></RadzenImage>
+        <RadzenColumn Style="min-width:100px; max-width:20vh;">
+            <RadzenRow Style="height:33%; min-width:100px; padding-top:20px; padding-left:10px; padding-right:10px;">Name:<br/>@currentAnime.Title_english<br/>@currentAnime.Title_japanese </RadzenRow>
+            <RadzenRow Style="height:33%; min-width:100px; padding-top:20px; padding-left:10px; padding-right:10px;">Episodes:<br />@currentAnime.Episodes</RadzenRow>
+            <RadzenRow Style="height:33%; min-width:100px; padding-top:20px; padding-left:10px; padding-right:10px;">Type:<br />@currentAnime.Media_type</RadzenRow>
+        </RadzenColumn>
+         <RadzenColumn Style="min-width:100px; max-width:20vh;">
+            <RadzenRow Style="height:33%; min-width:100px; padding-top:20px; margin-left:10px; padding-right:10px;">Score:<br />@currentAnime.Score<br /><br />Popularity:<br />@currentAnime.Popularity</RadzenRow>
+            <RadzenRow Style="height:33%; min-width:100px; padding-top:20px; margin-left:10px; padding-right:10px;">Airing:<br />@currentAnime.Status</RadzenRow>
+            <RadzenRow Style="height:33%; min-width:100px; padding-top:20px; margin-left:10px; padding-right:10px;">Aired:<br />@currentAnime.Aired_string</RadzenRow>
+         </RadzenColumn>
+
+
+            <RadzenColumn Style="min-width:100px;">
+
+            <RadzenDataGrid TItem="Anime" CellClick="@NavigateTo" AllowFiltering="false" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="6" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
+                            Data="@relational_animes" ColumnWidth="100px" LogicalFilterOperator="LogicalFilterOperator.Or" SelectionMode="DataGridSelectionMode.Single" @bind-Value=@relational_animes>
+                <Columns>
+                    <RadzenDataGridColumn Title="Image" Frozen="true" Sortable="false" Filterable="false" Width="100px" TextAlign="TextAlign.Center">
+                        <Template Context="data">
+                            <RadzenImage Path="@data.Image_large_webp_url" class="rz-gravatar" AlternateText="NO IMAGE!" />
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn Property="Title_english" Filterable="false" Title="English Name" Frozen="false" Width="200px" TextAlign="TextAlign.Center" />
+                    <RadzenDataGridColumn Property="Title_japanese" Title="Japanese Name" Frozen="false" Width="150px" />
+                    <RadzenDataGridColumn Property="Score" Title="Score" Frozen="false" Width="100px" SortOrder="SortOrder.Descending" />
+                    <RadzenDataGridColumn Property="Media_type" Title="Type" Width="100px" Frozen="false"/>
+                    <RadzenDataGridColumn Property="Year" Title="Year" Width="100px" Frozen="false" />
+                </Columns>
+            </RadzenDataGrid>
+
+            </RadzenColumn>
+             
+       
+    </RadzenRow>
+
+<RadzenRow Style="width: 100%; Padding-bottom:50px;">
+    @currentAnime.Synopsis
+</RadzenRow>
+
+
+</div>
+@code{
+    [Parameter]
+    public int mal_id { get; set; }
+    Anime currentAnime;
+    IList<Anime> relational_animes;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        getCurrentAnime();
+        getRelationalAnimes(currentAnime);
+        base.OnInitialized();
+    }
+
+    protected async void getCurrentAnime()
+    {
+        currentAnime = await animeService.GetAnimeByID(mal_id);
+
+    }
+
+    protected void NavigateToIndex()
+    {
+        navManager.NavigateTo("./");
+    }
+
+    protected void NavigateTo(DataGridCellMouseEventArgs<Anime> anime)
+    {   
+        navManager.NavigateTo($"/anime/{anime.Data.Mal_id}", forceLoad: true);
+    }
+
+    protected async void getRelationalAnimes(Anime anime)
+    {
+        relational_animes = await animeService.GetRelations(anime);
+    } 
+
+}
