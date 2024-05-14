@@ -5,7 +5,10 @@
 @page "/search/{name}"
 
 
+
+
 <SearchBar></SearchBar>
+
 
 @if (this.similar_animes != null)
 foreach (Anime similar_anime in this.similar_animes)
@@ -15,10 +18,10 @@ foreach (Anime similar_anime in this.similar_animes)
         <RadzenColumn Style="max-width:100px;">
                     <RadzenImage Style="max-width:100px; max-height:100px;" Path="@similar_anime.Image_large_webp_url"></RadzenImage>
         </RadzenColumn>
-        <RadzenColumn Style="max-width:100px;">
+        <RadzenColumn Style="max-width:200px;">
             English Name: <br> @similar_anime.Title_english
         </RadzenColumn>
-        <RadzenColumn Style="max-width:100px;">
+        <RadzenColumn Style="max-width:200px;">
                     Japanese name: <br> @similar_anime.Title_japanese
         </RadzenColumn>
         <RadzenColumn Style="max-width:100px;">
@@ -43,12 +46,11 @@ foreach (Anime similar_anime in this.similar_animes)
 
 
 
-
 @code {
     [Parameter]
     public string name { get; set; }
     List<Anime> similar_animes;
-    int similar_anime_number = 5;
+    int similar_anime_number = 20;
 
     protected override async Task OnInitializedAsync()
     {
@@ -59,6 +61,7 @@ foreach (Anime similar_anime in this.similar_animes)
     protected async void GetSimilarAnimes()
     {
         this.similar_animes = await animeService.GetSimilarAnimes(this.similar_anime_number, this.name);
+        this.similar_animes = this.similar_animes.OrderByDescending(anime => anime.Score).ToList();
     }
 
 

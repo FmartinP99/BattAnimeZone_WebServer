@@ -188,7 +188,7 @@ namespace BattAnimeZone.Services
 				if (anime.Title_english != "") eng_distance = distance_metric.Distance(name, anime.Title_english.ToLower());
 				if (anime.Title_japanese != "") jp_distance =  distance_metric.Distance(name, anime.Title_japanese.ToLower());
 				double min_distance = eng_distance < jp_distance ? eng_distance : jp_distance;
-				if (min_distance < 0.3) distances.Add(anime.Mal_id, min_distance);
+				if (min_distance < 0.7) distances.Add(anime.Mal_id, min_distance);
             }
 
 			var sorted_distances = distances.OrderBy(kv => kv.Value);
@@ -199,7 +199,8 @@ namespace BattAnimeZone.Services
 			{
 				return_Animes.Add(await this.GetAnimeByID(id));
 			}
-			return return_Animes;
+         
+            return return_Animes;
 
 
 		}

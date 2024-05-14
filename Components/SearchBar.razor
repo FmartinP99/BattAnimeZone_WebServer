@@ -15,7 +15,8 @@
 
 	public async void NavigateTo()
 	{
-		navManager.NavigateTo($"/search/{name_to_search}");
+		navManager.NavigateTo($"/search/{name_to_search}", forceLoad: true);
 	}
+
 
 }
