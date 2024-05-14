@@ -12,6 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\SearchResult.css" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CsvHelper" Version="32.0.2" />
     <PackageReference Include="F23.StringSimilarity" Version="6.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />

@@ -3,7 +3,7 @@
 @using BattAnimeZone.Services
 @inject AnimeService animeService
 @page "/anime/{mal_id:int}"
-
+<link rel="stylesheet" href="/AnimePage.css" />
 @if (currentAnime.Mal_id == -1) NavigateToIndex();
 
 <div Style="padding: 2;">
@@ -35,7 +35,7 @@
             <RadzenDataGrid TItem="Anime" CellClick="@NavigateTo" AllowFiltering="false" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="6" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
                             Data="@relational_animes" ColumnWidth="100px" LogicalFilterOperator="LogicalFilterOperator.Or" SelectionMode="DataGridSelectionMode.Single" @bind-Value=@relational_animes>
                 <Columns>
-                    <RadzenDataGridColumn Title="Image" Frozen="true" Sortable="false" Filterable="false" Width="100px" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumn Title="Image" Frozen="false" Sortable="false" Filterable="false" Width="100px" TextAlign="TextAlign.Center">
                         <Template Context="data">
                             <RadzenImage Path="@data.Image_large_webp_url" class="rz-gravatar" AlternateText="NO IMAGE!" />
                         </Template>

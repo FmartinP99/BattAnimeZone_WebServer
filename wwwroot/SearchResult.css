@@ -1,0 +1,6 @@
+﻿body {
+}
+.rz-row:hover {
+    border: solid 1px white;
+    cursor: pointer;
+}
