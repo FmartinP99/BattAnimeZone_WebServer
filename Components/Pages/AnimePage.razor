@@ -40,11 +40,34 @@
                             <RadzenImage Path="@data.Image_large_webp_url" class="rz-gravatar" AlternateText="NO IMAGE!" />
                         </Template>
                     </RadzenDataGridColumn>
-                    <RadzenDataGridColumn Property="Title_english" Filterable="false" Title="English Name" Frozen="false" Width="200px" TextAlign="TextAlign.Center" />
-                    <RadzenDataGridColumn Property="Title_japanese" Title="Japanese Name" Frozen="false" Width="150px" />
-                    <RadzenDataGridColumn Property="Score" Title="Score" Frozen="false" Width="100px" SortOrder="SortOrder.Descending" />
-                    <RadzenDataGridColumn Property="Media_type" Title="Type" Width="100px" Frozen="false"/>
-                    <RadzenDataGridColumn Property="Year" Title="Year" Width="100px" Frozen="false" />
+                    <RadzenDataGridColumn Filterable="false" Title="English Name" Frozen="false" Width="200px" TextAlign="TextAlign.Center">
+                        <Template Context="data"><span style="color: white">@data.Title_english</span></Template>
+                        </RadzenDataGridColumn>
+                    <RadzenDataGridColumn  Title="Japanese Name" Frozen="false" Width="150px">
+                         <Template Context="data">
+                            <span style="color: white">@data.Title_japanese</span>
+                         </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn Title="Score" Frozen="false" Width="150px" SortOrder="SortOrder.Descending">
+                         <Template Context="data">
+                            <span style="color: white;">@data.Score</span>
+                         </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn  Title="Type" Frozen="false" Width="150px">
+                         <Template Context="data">
+                            <span style="color: white">@data.Media_type</span>
+                         </Template>
+                    </RadzenDataGridColumn>
+
+                    <RadzenDataGridColumn Title="Year" Frozen="false" Width="150px">
+                        <Template Context="data">
+                            <span style="color: white">@data.Year</span>
+                        </Template>
+                    </RadzenDataGridColumn>
+
+
                 </Columns>
             </RadzenDataGrid>
 

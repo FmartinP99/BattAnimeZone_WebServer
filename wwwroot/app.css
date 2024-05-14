@@ -1,6 +1,37 @@
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --rz-grid-header-background-color: transparent;
+    --rz-grid-frozen-cell-background-color: transparent;
+    --rz-grid-header-color: white;
+    --rz-grid-frozen-cell-color: white;
+    --rz-paginator-numeric-button-color: white;
+    --rz-paginator-numeric-button-selected-color: white;
+    --rz-paginator-next-button-color: white;
+    --rz-paginator-back-button-color: white;
+    --rz-grid-background-color: transparent;
+    --rz-text-h3-color: white;
+    --bs-body-color: white;
 }
+
+
+
+
+
+#maindiv {
+    height: 100vh !important;
+
+}
+
+.mainclass {
+    background-image: linear-gradient(to right, #151515,#202020,#252525,#202020,#151515) !important;
+    color: white;
+    
+    width: 100%;
+    height: 100%;
+}
+
+
+
 
 a, .btn-link {
     color: #006bb7;

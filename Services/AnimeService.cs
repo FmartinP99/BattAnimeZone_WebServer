@@ -187,8 +187,9 @@ namespace BattAnimeZone.Services
 				double jp_distance = double.MaxValue;
 				if (anime.Title_english != "") eng_distance = distance_metric.Distance(name, anime.Title_english.ToLower());
 				if (anime.Title_japanese != "") jp_distance =  distance_metric.Distance(name, anime.Title_japanese.ToLower());
-				distances.Add(anime.Mal_id, eng_distance < jp_distance ? eng_distance : jp_distance);
-			}
+				double min_distance = eng_distance < jp_distance ? eng_distance : jp_distance;
+				if (min_distance < 0.3) distances.Add(anime.Mal_id, min_distance);
+            }
 
 			var sorted_distances = distances.OrderBy(kv => kv.Value);
 			var top_n = sorted_distances.Take(n).Select(kv => kv.Key);
