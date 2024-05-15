@@ -1,27 +1,50 @@
-﻿@using BattAnimeZone.Services
+@using BattAnimeZone.Services
 @using BattAnimeZone.Components.Models.Genre
 @inject AnimeService animeService
+<link rel="stylesheet" href="/ListGenre.css" />
 @page "/genrelist"
 
 
-@foreach (var prod in animeGenres)
+
+
+adssdadasd
+
+@for (int rowindex = 0; rowindex < (int)Math.Ceiling((double)animeGenres.Count / 4); rowindex++)
 {
-    @prod.Value.Name
-    <br />
+    //must copy the variable due to how c# lambda functions work -> has access to a variable and not to the value of the variable.
+    var localRow = rowindex;
+    int item_index = localRow * 4;
+    <RadzenRow class="genreListRow">
+        @for (int colindex = 0; colindex < 4; colindex++)
+        {
+                var localCol = colindex;
+                @if (item_index + localCol < animeGenres.Count)
+               {
+                <RadzenColumn class="genreListColumn">
+                        <p class="centered-text">@animeGenres[item_index + localCol].Name</p>
+                </RadzenColumn>
+            }
+        }
+       
+    </RadzenRow>
 }
-
-
+asdasdadsas22222222222222
+aaasddsadsa
 
 
 @code {
-
-    Dictionary<int, AnimeGenre> animeGenres;
-
+    List<AnimeGenre> animeGenres;
 
     protected override async Task OnInitializedAsync()
     {
-        animeGenres = await animeService.GetGenres();
+        Dictionary<int, AnimeGenre> ang = await animeService.GetGenres();
+        animeGenres = ang.Values.ToList();
+
+        animeGenres = animeGenres.OrderByDescending(g => g.Count).ToList();
+
         base.OnInitialized();
     }
+
+
 
 }

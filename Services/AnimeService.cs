@@ -6,6 +6,9 @@ using F23.StringSimilarity;
 using BattAnimeZone.Components.Models.Anime;
 using BattAnimeZone.Components.Models.Producer;
 using BattAnimeZone.Components.Models.Genre;
+using System.Collections;
+using BattAnimeZone.Components.Pages;
+using System.Runtime.CompilerServices;
 
 namespace BattAnimeZone.Services
 {
@@ -15,16 +18,20 @@ namespace BattAnimeZone.Services
 		private Dictionary<int, AnimeProducer> producers = new Dictionary<int, AnimeProducer> { };
 		private Dictionary<int, AnimeGenre> genres = new Dictionary<int, AnimeGenre> { };
 
+		private Dictionary<int, HashSet<int>> animesPerGenre = new Dictionary<int, HashSet<int>>();
+
 		public AnimeService()
 		{
 			FillAnimes();
 			FillProducers();
 			FillGenres();
-		}
+            FillAnimesPerGenre();
+
+        }
 
 
 
-		private void FillAnimes()
+		private async void FillAnimes()
 		{
 			using (var reader = new StreamReader("Files/mal_data_filtered_filled.csv"))
 			using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
@@ -159,7 +166,7 @@ namespace BattAnimeZone.Services
 
 
 
-		public void FillProducers()
+		public async void FillProducers()
 		{
 			using (var reader = new StreamReader("Files/mal_producers.csv"))
 			using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
@@ -188,7 +195,7 @@ namespace BattAnimeZone.Services
 			}
 		}
 
-		public void FillGenres()
+		public async void FillGenres()
 		{
 			using (var reader = new StreamReader("Files/mal_anime_genres.csv"))
 			using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
@@ -211,9 +218,36 @@ namespace BattAnimeZone.Services
 			}
 		}
 
+        public async void FillAnimesPerGenre()
+        {
+			Dictionary<int, HashSet<int>> tempApG = new Dictionary<int, HashSet<int>>();
+
+			foreach (var gen in this.genres)
+			{
+                tempApG.Add(gen.Key, new HashSet<int>());
 
 
-		public Task<Dictionary<int, Anime>> GetAnimes()
+            }
+
+			foreach (var ani in this.animes)
+			{
+				foreach(var gen in ani.Value.Genres)
+				{
+                    tempApG[gen.Mal_id].Add(ani.Value.Mal_id);
+				}
+
+                foreach (var gen in ani.Value.Themes)
+                {
+                    tempApG[gen.Mal_id].Add(ani.Value.Mal_id);
+                }
+            }
+
+			this.animesPerGenre = tempApG;    
+        }
+
+
+
+        public Task<Dictionary<int, Anime>> GetAnimes()
 		{
 			return Task.FromResult(this.animes);
 		}
@@ -288,6 +322,17 @@ namespace BattAnimeZone.Services
 			}
             return relational_animes;
         }
+
+
+
+
+
+		public async Task<Dictionary<int, HashSet<int>>> GetAnimesPerGenre()
+		{
+			return this.animesPerGenre;
+        }
+
+
 
 
 		public static string DecodeJSString(string s)

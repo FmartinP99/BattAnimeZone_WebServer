@@ -1,0 +1,30 @@
+﻿body {
+}
+
+.genreListRow {
+    min-height: 250px;
+    max-height: 250px;
+    min-width: 100vw;
+    margin-bottom: 50px;
+    margin-top: 50px;
+    overflow-x: auto;
+}
+
+
+.genreListColumn {
+    display: flex;
+    max-width: 20%;
+    min-width: 20%;
+    margin-left: 25px;
+    margin-right: 30px;
+    background-color: blue;
+    border-radius: 50px;
+    justify-content: center; /* Horizontally center */
+    align-items: center; /* Vertically center */
+}
+
+.centered-text {
+    text-align: center; /* Center the text horizontally */
+    margin: 0; /* Remove any default margins */
+    font-size: 30px;
+}
