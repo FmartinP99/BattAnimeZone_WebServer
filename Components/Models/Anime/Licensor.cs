@@ -1,6 +1,6 @@
-﻿namespace BattAnimeZone.Components.Models
+﻿namespace BattAnimeZone.Components.Models.Anime
 {
-	public class Producer
+	public class Licensor
 	{
 		public int Mal_id { get; set; } = -1;
 		public string Type { get; set; } = string.Empty;

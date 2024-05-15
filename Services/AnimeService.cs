@@ -1,26 +1,34 @@
-﻿using BattAnimeZone.Components.Models;
-using CsvHelper;
+﻿using CsvHelper;
 using Newtonsoft.Json;
 using System.Globalization;
 using System.Text;
 using F23.StringSimilarity;
-using System.Collections.Generic;
-using BattAnimeZone.Components.Pages;
+using BattAnimeZone.Components.Models.Anime;
+using BattAnimeZone.Components.Models.Producer;
+using BattAnimeZone.Components.Models.Genre;
 
 namespace BattAnimeZone.Services
 {
-	public class AnimeService
+    public class AnimeService
 	{
 		private Dictionary<int, Anime> animes = new Dictionary<int, Anime> { };
-		private Dictionary<string, int> animes_name_id_pair = new Dictionary<string, int> { };
+		private Dictionary<int, AnimeProducer> producers = new Dictionary<int, AnimeProducer> { };
+		private Dictionary<int, AnimeGenre> genres = new Dictionary<int, AnimeGenre> { };
 
 		public AnimeService()
+		{
+			FillAnimes();
+			FillProducers();
+			FillGenres();
+		}
+
+
+
+		private void FillAnimes()
 		{
 			using (var reader = new StreamReader("Files/mal_data_filtered_filled.csv"))
 			using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
 			{
-				int counter = 1;
-
 				csv.Read();
 				csv.ReadHeader();
 				while (csv.Read())
@@ -144,9 +152,60 @@ namespace BattAnimeZone.Services
 						Aired_string = csv.GetField("aired.string"),
 					};
 					animes.Add(new_anime.Mal_id, new_anime);
-					//animes_name_id_pair.Add(new_anime.Title_english, new_anime.Mal_id);
-					//animes_name_id_pair.Add(new_anime.Title_japanese, new_anime.Mal_id);
-					counter += 1;
+
+				}
+			}
+		}
+
+
+
+		public void FillProducers()
+		{
+			using (var reader = new StreamReader("Files/mal_producers.csv"))
+			using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+			{
+				csv.Read();
+				csv.ReadHeader();
+				while (csv.Read())
+				{
+					List<ProducerTitle> producerTitle = JsonConvert.DeserializeObject<List<ProducerTitle>>(csv.GetField("titles"));
+
+					AnimeProducer new_producer = new AnimeProducer
+					{
+						Mal_id = csv.GetField<int>("mal_id"),
+						Url = csv.GetField("url"),
+						Titles = producerTitle,
+						Favorites = csv.GetField<int>("favorites"),
+						Established = csv.GetField("established"),
+						About = csv.GetField("about"),
+						Count = csv.GetField<int>("count"),
+						Image_url = csv.GetField("images.jpg.image_url"),
+
+					};
+					producers.Add(new_producer.Mal_id, new_producer);
+
+				}
+			}
+		}
+
+		public void FillGenres()
+		{
+			using (var reader = new StreamReader("Files/mal_anime_genres.csv"))
+			using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+			{
+				csv.Read();
+				csv.ReadHeader();
+				while (csv.Read())
+				{
+					AnimeGenre new_genre = new AnimeGenre
+					{
+						Mal_id = csv.GetField<int>("mal_id"),
+						Name = csv.GetField("name"),
+						Url = csv.GetField("url"),
+						Count = csv.GetField<int>("count"),
+
+					};
+					genres.Add(new_genre.Mal_id, new_genre);
 
 				}
 			}
@@ -167,13 +226,18 @@ namespace BattAnimeZone.Services
 
 		}
 
-		public async Task<Dictionary<string, int>> GetAnimeNameIdPairs()
-		{
-			return animes_name_id_pair;
-		}
+        public Task<Dictionary<int, AnimeGenre>> GetGenres()
+        {
+            return Task.FromResult(this.genres);
+        }
+
+        public Task<Dictionary<int, AnimeProducer>> GetProducers()
+        {
+            return Task.FromResult(this.producers);
+        }
 
 
-		public async Task<List<Anime>> GetSimilarAnimes(int n, string name)
+        public async Task<List<Anime>> GetSimilarAnimes(int n, string name)
 		{
 			name = name.ToLower();
 

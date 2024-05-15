@@ -1,0 +1,27 @@
+﻿@using BattAnimeZone.Services
+@using BattAnimeZone.Components.Models.Genre
+@inject AnimeService animeService
+@page "/genrelist"
+
+
+@foreach (var prod in animeGenres)
+{
+    @prod.Value.Name
+    <br />
+}
+
+
+
+
+@code {
+
+    Dictionary<int, AnimeGenre> animeGenres;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        animeGenres = await animeService.GetGenres();
+        base.OnInitialized();
+    }
+
+}

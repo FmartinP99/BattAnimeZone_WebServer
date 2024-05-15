@@ -1,4 +1,4 @@
-﻿namespace BattAnimeZone.Components.Models
+﻿namespace BattAnimeZone.Components.Models.Anime
 {
 	public class Relations
 	{

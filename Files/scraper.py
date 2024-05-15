@@ -93,6 +93,7 @@ def get_producers():
 
         loaded_data = loaded["data"]
         flattened = pd.json_normalize(loaded_data)
+        flattened = flattened.drop_duplicates(subset=["mal_id"])
         if not os.path.isfile('mal_producers.csv'):
             flattened.to_csv('mal_producers.csv',  index=False)
         else:  # else it exists so append without writing the header
@@ -101,6 +102,7 @@ def get_producers():
         time.sleep(1)
         has_next_page = loaded["pagination"]["has_next_page"]
         print(has_next_page)
+
 
 
 def check_and_fill_empty_cols():
@@ -144,5 +146,4 @@ if __name__ == "__main__":
     #get_anime_genres()
 
     #get_producers()
-
 

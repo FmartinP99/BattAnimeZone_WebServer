@@ -1,0 +1,26 @@
+﻿@using BattAnimeZone.Services
+@using BattAnimeZone.Components.Models.Producer
+@inject AnimeService animeService
+@page "/studiolist"
+
+
+@foreach(var prod in animeProducers)
+{
+    @prod.Value.Url<br />
+}
+
+
+
+
+@code {
+
+    Dictionary<int, AnimeProducer> animeProducers;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        animeProducers = await animeService.GetProducers();
+        base.OnInitialized();
+    }
+
+}
