@@ -33,7 +33,7 @@ namespace BattAnimeZone.Services
 
 
 
-		private async void FillAnimes()
+		private void FillAnimes()
 		{
 			using (var reader = new StreamReader("Files/mal_data_filtered_filled.csv"))
 			using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
@@ -168,7 +168,7 @@ namespace BattAnimeZone.Services
 
 
 
-		public async void FillProducers()
+		public void FillProducers()
 		{
 			using (var reader = new StreamReader("Files/mal_producers.csv"))
 			using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
@@ -197,7 +197,7 @@ namespace BattAnimeZone.Services
 			}
 		}
 
-		public async void FillGenres()
+		public void FillGenres()
 		{
 			using (var reader = new StreamReader("Files/mal_anime_genres.csv"))
 			using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
@@ -220,7 +220,7 @@ namespace BattAnimeZone.Services
 			}
 		}
 
-        public async void FillAnimesPerGenreIdsHash()
+        public void FillAnimesPerGenreIdsHash()
         {
 			Dictionary<int, HashSet<int>> tempApG = new Dictionary<int, HashSet<int>>();
 
@@ -248,16 +248,16 @@ namespace BattAnimeZone.Services
         }
 
 
-        public async void FillAnimesPerGenreList()
+        public void FillAnimesPerGenreList()
 		{
             Dictionary<int, List<Anime>> tempApG = new Dictionary<int, List<Anime>>();
 
             foreach (var ApGHash in this.animesPerGenreIdsHash)
             {
                 
-                var tasks = ApGHash.Value.Select(ApGHashId => this.GetAnimeByID(ApGHashId)).ToList();
-                Anime[] animes = await Task.WhenAll(tasks);
-                tempApG.Add(ApGHash.Key, animes.ToList());
+                var animes = ApGHash.Value.Select(ApGHashId => this.GetAnimeByIDSync(ApGHashId)).ToList();
+            
+                tempApG.Add(ApGHash.Key, animes);
                 
             }
 
@@ -282,6 +282,14 @@ namespace BattAnimeZone.Services
 			return new Anime();
 
 		}
+
+        public Anime GetAnimeByIDSync(int mal_id)
+        {
+            Anime return_anime;
+            if (this.animes.TryGetValue(mal_id, out return_anime)) return return_anime;
+            return new Anime();
+
+        }
 
         public Task<Dictionary<int, AnimeGenre>> GetGenres()
         {
