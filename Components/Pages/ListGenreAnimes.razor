@@ -6,6 +6,9 @@
 <link rel="stylesheet" href="/ListGenreAnimes.css" />
 @page "/genrelist/{genreid:int}"
 
+
+<SearchBar></SearchBar>
+
 <RadzenPager Style="overflow-x: clip; max-width: 25vw; ;"  PagingSummaryFormat="@pagingSummaryFormat" ShowPagingSummary="true" HorizontalAlign="HorizontalAlign.Left" PageNumbersCount=5 PageSize=@pageSize Count="count" PageChanged="@PageChanged" />
 
 
