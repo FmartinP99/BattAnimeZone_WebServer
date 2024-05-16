@@ -1,0 +1,13 @@
+﻿
+.rz-row:hover {
+    border: solid 1px white;
+    cursor: pointer;
+}
+
+.rz-listbox {
+    background-color: transparent !important;
+}
+
+.rz-inputtext {
+    background-color: transparent !important;
+}

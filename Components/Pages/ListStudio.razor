@@ -3,13 +3,12 @@
 @inject AnimeService animeService
 @page "/studiolist"
 
+<SearchBar></SearchBar>
 
 @foreach(var prod in animeProducers)
 {
     @prod.Value.Url<br />
 }
-
-
 
 
 @code {

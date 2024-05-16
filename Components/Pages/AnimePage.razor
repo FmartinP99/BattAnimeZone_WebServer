@@ -33,7 +33,7 @@
 
             <RadzenColumn Style="min-width:100px;">
 
-            <RadzenDataGrid TItem="Anime" CellClick="@NavigateTo" AllowFiltering="false" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="6" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
+            <RadzenDataGrid EmptyText="There are no relational animes! :("  TItem="Anime" CellClick="@NavigateTo" AllowFiltering="false" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="6" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
                             Data="@relational_animes" ColumnWidth="100px" LogicalFilterOperator="LogicalFilterOperator.Or" SelectionMode="DataGridSelectionMode.Single" @bind-Value=@relational_animes>
                 <Columns>
                     <RadzenDataGridColumn Title="Image" Frozen="false" Sortable="false" Filterable="false" Width="100px" TextAlign="TextAlign.Center">
