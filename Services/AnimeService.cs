@@ -10,10 +10,13 @@ using System.Collections;
 using BattAnimeZone.Components.Pages;
 using System.Runtime.CompilerServices;
 using System.ComponentModel;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace BattAnimeZone.Services
 {
-    public class AnimeService
+	public class AnimeService
 	{
 		private Dictionary<int, Anime> animes = new Dictionary<int, Anime> { };
 		private Dictionary<int, AnimeProducer> producers = new Dictionary<int, AnimeProducer> { };
@@ -26,10 +29,10 @@ namespace BattAnimeZone.Services
 			FillAnimes();
 			FillProducers();
 			FillGenres();
-            FillAnimesPerGenreIdsHash();
-            FillAnimesPerGenreList();
+			FillAnimesPerGenreIdsHash();
+			FillAnimesPerGenreList();
 
-        }
+		}
 
 
 
@@ -220,49 +223,49 @@ namespace BattAnimeZone.Services
 			}
 		}
 
-        public void FillAnimesPerGenreIdsHash()
-        {
+		public void FillAnimesPerGenreIdsHash()
+		{
 			Dictionary<int, HashSet<int>> tempApG = new Dictionary<int, HashSet<int>>();
 
 			foreach (var gen in this.genres)
 			{
-                tempApG.Add(gen.Key, new HashSet<int>());
+				tempApG.Add(gen.Key, new HashSet<int>());
 
 
-            }
+			}
 
 			foreach (var ani in this.animes)
 			{
-				foreach(var gen in ani.Value.Genres)
+				foreach (var gen in ani.Value.Genres)
 				{
-                    tempApG[gen.Mal_id].Add(ani.Value.Mal_id);
+					tempApG[gen.Mal_id].Add(ani.Value.Mal_id);
 				}
 
-                foreach (var gen in ani.Value.Themes)
-                {
-                    tempApG[gen.Mal_id].Add(ani.Value.Mal_id);
-                }
-            }
+				foreach (var gen in ani.Value.Themes)
+				{
+					tempApG[gen.Mal_id].Add(ani.Value.Mal_id);
+				}
+			}
 
-			this.animesPerGenreIdsHash = tempApG;    
-        }
+			this.animesPerGenreIdsHash = tempApG;
+		}
 
 
-        public void FillAnimesPerGenreList()
+		public void FillAnimesPerGenreList()
 		{
-            Dictionary<int, List<Anime>> tempApG = new Dictionary<int, List<Anime>>();
+			Dictionary<int, List<Anime>> tempApG = new Dictionary<int, List<Anime>>();
 
-            foreach (var ApGHash in this.animesPerGenreIdsHash)
-            {
-                
-                var animes = ApGHash.Value.Select(ApGHashId => this.GetAnimeByIDSync(ApGHashId)).ToList();
-            
-                tempApG.Add(ApGHash.Key, animes);
-                
-            }
+			foreach (var ApGHash in this.animesPerGenreIdsHash)
+			{
+
+				var animes = ApGHash.Value.Select(ApGHashId => this.GetAnimeByIDSync(ApGHashId)).ToList();
+
+				tempApG.Add(ApGHash.Key, animes);
+
+			}
 
 			this.animesPerGenre = tempApG;
-        }
+		}
 
 		public async Task<List<Anime>> GetAnimesPerGenre(int genre_id)
 		{
@@ -270,7 +273,7 @@ namespace BattAnimeZone.Services
 		}
 
 
-        public Task<Dictionary<int, Anime>> GetAllAnimes()
+		public Task<Dictionary<int, Anime>> GetAllAnimes()
 		{
 			return Task.FromResult(this.animes);
 		}
@@ -283,35 +286,36 @@ namespace BattAnimeZone.Services
 
 		}
 
-        public Anime GetAnimeByIDSync(int mal_id)
-        {
-            Anime return_anime;
-            if (this.animes.TryGetValue(mal_id, out return_anime)) return return_anime;
-            return new Anime();
+		public Anime GetAnimeByIDSync(int mal_id)
+		{
+			Anime return_anime;
+			if (this.animes.TryGetValue(mal_id, out return_anime)) return return_anime;
+			return new Anime();
 
-        }
+		}
 
 		public async Task<List<Anime>> GetMultipleAnimes(HashSet<int> ids)
 		{
 			List<Anime> animelist = new List<Anime>();
-			foreach (int id in ids) {
+			foreach (int id in ids)
+			{
 				animelist.Add(await GetAnimeByID(id));
 			}
-			return animelist;	
+			return animelist;
 		}
 
-        public Task<Dictionary<int, AnimeGenre>> GetGenres()
-        {
-            return Task.FromResult(this.genres);
-        }
+		public Task<Dictionary<int, AnimeGenre>> GetGenres()
+		{
+			return Task.FromResult(this.genres);
+		}
 
-        public Task<Dictionary<int, AnimeProducer>> GetProducers()
-        {
-            return Task.FromResult(this.producers);
-        }
+		public Task<Dictionary<int, AnimeProducer>> GetProducers()
+		{
+			return Task.FromResult(this.producers);
+		}
 
 
-        public async Task<List<Anime>> GetSimilarAnimes(int n, string name)
+		public async Task<List<Anime>> GetSimilarAnimes(int n, string name)
 		{
 			name = name.ToLower();
 
@@ -324,10 +328,10 @@ namespace BattAnimeZone.Services
 				double eng_distance = double.MaxValue;
 				double jp_distance = double.MaxValue;
 				if (anime.Title_english != "") eng_distance = distance_metric.Distance(name, anime.Title_english.ToLower());
-				if (anime.Title_japanese != "") jp_distance =  distance_metric.Distance(name, anime.Title_japanese.ToLower());
+				if (anime.Title_japanese != "") jp_distance = distance_metric.Distance(name, anime.Title_japanese.ToLower());
 				double min_distance = eng_distance < jp_distance ? eng_distance : jp_distance;
 				if (min_distance < 0.7) distances.Add(anime.Mal_id, min_distance);
-            }
+			}
 
 			var sorted_distances = distances.OrderBy(kv => kv.Value);
 			var top_n = sorted_distances.Take(n).Select(kv => kv.Key);
@@ -337,8 +341,8 @@ namespace BattAnimeZone.Services
 			{
 				return_Animes.Add(await this.GetAnimeByID(id));
 			}
-         
-            return return_Animes;
+
+			return return_Animes;
 
 
 		}
@@ -357,16 +361,16 @@ namespace BattAnimeZone.Services
 						relational_animes.Add(await this.GetAnimeByID(entry.Mal_id));
 					}
 
-					
+
 				}
 			}
-            return relational_animes;
-        }
+			return relational_animes;
+		}
 
 		public async Task<Dictionary<int, HashSet<int>>> GetAnimesPerGenreIds()
 		{
 			return this.animesPerGenreIdsHash;
-        }
+		}
 
 		public static string DecodeJSString(string s)
 		{
