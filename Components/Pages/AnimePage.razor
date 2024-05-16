@@ -4,6 +4,7 @@
 @inject AnimeService animeService
 @page "/anime/{mal_id:int}"
 <link rel="stylesheet" href="/AnimePage.css" />
+
 @if (currentAnime.Mal_id == -1) NavigateToIndex();
 
 <div Style="padding: 2;">

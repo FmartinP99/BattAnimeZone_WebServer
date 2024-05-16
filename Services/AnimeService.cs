@@ -9,6 +9,7 @@ using BattAnimeZone.Components.Models.Genre;
 using System.Collections;
 using BattAnimeZone.Components.Pages;
 using System.Runtime.CompilerServices;
+using System.ComponentModel;
 
 namespace BattAnimeZone.Services
 {
@@ -17,15 +18,16 @@ namespace BattAnimeZone.Services
 		private Dictionary<int, Anime> animes = new Dictionary<int, Anime> { };
 		private Dictionary<int, AnimeProducer> producers = new Dictionary<int, AnimeProducer> { };
 		private Dictionary<int, AnimeGenre> genres = new Dictionary<int, AnimeGenre> { };
-
-		private Dictionary<int, HashSet<int>> animesPerGenre = new Dictionary<int, HashSet<int>>();
+		private Dictionary<int, HashSet<int>> animesPerGenreIdsHash = new Dictionary<int, HashSet<int>>();
+		private Dictionary<int, List<Anime>> animesPerGenre = new Dictionary<int, List<Anime>>();
 
 		public AnimeService()
 		{
 			FillAnimes();
 			FillProducers();
 			FillGenres();
-            FillAnimesPerGenre();
+            FillAnimesPerGenreIdsHash();
+            FillAnimesPerGenreList();
 
         }
 
@@ -218,7 +220,7 @@ namespace BattAnimeZone.Services
 			}
 		}
 
-        public async void FillAnimesPerGenre()
+        public async void FillAnimesPerGenreIdsHash()
         {
 			Dictionary<int, HashSet<int>> tempApG = new Dictionary<int, HashSet<int>>();
 
@@ -242,9 +244,30 @@ namespace BattAnimeZone.Services
                 }
             }
 
-			this.animesPerGenre = tempApG;    
+			this.animesPerGenreIdsHash = tempApG;    
         }
 
+
+        public async void FillAnimesPerGenreList()
+		{
+            Dictionary<int, List<Anime>> tempApG = new Dictionary<int, List<Anime>>();
+
+            foreach (var ApGHash in this.animesPerGenreIdsHash)
+            {
+                
+                var tasks = ApGHash.Value.Select(ApGHashId => this.GetAnimeByID(ApGHashId)).ToList();
+                Anime[] animes = await Task.WhenAll(tasks);
+                tempApG.Add(ApGHash.Key, animes.ToList());
+                
+            }
+
+			this.animesPerGenre = tempApG;
+        }
+
+		public async Task<List<Anime>> GetAnimesPerGenre(int genre_id)
+		{
+			return this.animesPerGenre[genre_id];
+		}
 
 
         public Task<Dictionary<int, Anime>> GetAnimes()
@@ -327,9 +350,9 @@ namespace BattAnimeZone.Services
 
 
 
-		public async Task<Dictionary<int, HashSet<int>>> GetAnimesPerGenre()
+		public async Task<Dictionary<int, HashSet<int>>> GetAnimesPerGenreIds()
 		{
-			return this.animesPerGenre;
+			return this.animesPerGenreIdsHash;
         }
 
 

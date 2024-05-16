@@ -3,7 +3,7 @@
 @using BattAnimeZone.Services
 @inject AnimeService animeService
 @page "/search/{name}"
-<link rel="stylesheet" href="/SearchResult.razor.css" />
+<link rel="stylesheet" href="/SearchResult.css" />
 
 
 
@@ -15,7 +15,7 @@ foreach (Anime similar_anime in this.similar_animes)
 {
     {
             <RadzenRow @onclick=@(() => NavigateTo(similar_anime.Mal_id)) Style="height:100px; margin-bottom: 30px;">
-        <RadzenColumn Style="max-width:100px;">
+        <RadzenColumn Style="max-width:100px; ">
                     <RadzenImage Style="max-width:100px; max-height:100px;" Path="@similar_anime.Image_large_webp_url"></RadzenImage>
         </RadzenColumn>
         <RadzenColumn Style="max-width:200px;">

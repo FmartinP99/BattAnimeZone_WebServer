@@ -19,12 +19,19 @@
     margin-right: 30px;
     background-color: blue;
     border-radius: 50px;
-    justify-content: center; /* Horizontally center */
-    align-items: center; /* Vertically center */
+    justify-content: center; 
+    align-items: center; 
+    &:hover
+    {
+        transform: translateY(-5px);
+        box-shadow: none;
+        opacity: 0.9;
+        cursor: pointer;
+    }
 }
 
 .centered-text {
-    text-align: center; /* Center the text horizontally */
-    margin: 0; /* Remove any default margins */
+    text-align: center; 
+    margin: 0; 
     font-size: 30px;
 }
