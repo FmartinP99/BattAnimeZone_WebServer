@@ -59,6 +59,7 @@
     {
 
         getCurrentAnime();
+        if (currentAnime.Mal_id == -1) return;
         getRelationalAnimes(currentAnime);
         base.OnInitialized();
     }

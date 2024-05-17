@@ -269,7 +269,10 @@ namespace BattAnimeZone.Services
 
 		public async Task<List<Anime>> GetAnimesPerGenre(int genre_id)
 		{
-			return this.animesPerGenre[genre_id];
+			List<Anime> return_apg;
+            if (this.animesPerGenre.TryGetValue(genre_id, out return_apg)) return return_apg;
+			Anime fake = new Anime();
+			return new List<Anime> {fake};
 		}
 
 

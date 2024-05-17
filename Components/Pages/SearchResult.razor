@@ -2,6 +2,7 @@
 @using BattAnimeZone.Components.Models.Anime
 @using BattAnimeZone.Services
 @inject AnimeService animeService
+@page "/search/"
 @page "/search/{name}"
 <link rel="stylesheet" href="/SearchResult.css" />
 
@@ -10,7 +11,7 @@
 <SearchBar></SearchBar>
 
 
-@if (this.similar_animes != null)
+@if (this.similar_animes != null){
 foreach (Anime similar_anime in this.similar_animes)
 {
     
@@ -39,16 +40,21 @@ foreach (Anime similar_anime in this.similar_animes)
         <RadzenColumn Style="max-width:100px;">
                     Status: <br> @similar_anime.Status
         </RadzenColumn>
-    </RadzenRow>
+        </RadzenRow>
 
-    
+
+    }
+}
+else if (this.similar_animes == null || this.name == "" || this.name == null)
+{
+    <h1 style="margin-top:50px">You did not search for anything!</h1>
 }
 
 
 
 @code {
     [Parameter]
-    public string name { get; set; }
+    public string name { get; set; } = "";
     List<Anime> similar_animes;
     int similar_anime_number = 20;
 
@@ -60,6 +66,7 @@ foreach (Anime similar_anime in this.similar_animes)
 
     protected async Task GetSimilarAnimes()
     {
+        if (this.name == "" || this.name == null) return;
         this.similar_animes = await animeService.GetSimilarAnimes(this.similar_anime_number, this.name);
         this.similar_animes = this.similar_animes.OrderByDescending(anime => anime.Score).ToList();
     }
@@ -69,6 +76,11 @@ foreach (Anime similar_anime in this.similar_animes)
     {
 
         navManager.NavigateTo($"/anime/{mal_id}");
+    }
+
+    protected void NavigateToIndex()
+    {
+        navManager.NavigateTo("./");
     }
 
 }
