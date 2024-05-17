@@ -58,7 +58,7 @@ foreach (Anime similar_anime in this.similar_animes)
         base.OnInitialized();
     }
 
-    protected async void GetSimilarAnimes()
+    protected async Task GetSimilarAnimes()
     {
         this.similar_animes = await animeService.GetSimilarAnimes(this.similar_anime_number, this.name);
         this.similar_animes = this.similar_animes.OrderByDescending(anime => anime.Score).ToList();

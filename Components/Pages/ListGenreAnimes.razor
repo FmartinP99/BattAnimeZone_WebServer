@@ -18,19 +18,30 @@
             <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
                 <RadzenImage Path="@anime.Image_large_webp_url" Style="width: 100px; height: 100px; border-radius: 15%" AlternateText="no image" />
                 <RadzenStack Gap="0">
-                    <RadzenText TextStyle="TextStyle.Overline" Style="color:White" class=" rz-display-flex rz-mt-2 rz-my-0">English Title</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Overline" Style="color:White" class=" rz-display-flex rz-mt-2 rz-my-0">English Name</RadzenText>
                     <RadzenText TextStyle="TextStyle.Body1" Style="color:White"><b>@(anime.Title_english)</b></RadzenText>
-                    <RadzenText TextStyle="TextStyle.Overline" Style="color:White" class="rz-display-flex rz-mt-4 rz-mb-0">Japanese Title</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Overline" Style="color:White" class="rz-display-flex rz-mt-4 rz-mb-0">Japanese Name</RadzenText>
                     <RadzenText TextStyle="TextStyle.Body1" Style="color:White"><b>@(anime.Title_japanese)</b></RadzenText>
+                </RadzenStack>
+                <RadzenStack Gap="0">
+                    <RadzenText TextStyle="TextStyle.Overline" Style="color:White" class=" rz-display-flex rz-mt-2 rz-my-0">Score</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body1" Style="color:White"><b>@(anime.Score)</b></RadzenText>
+                    <RadzenText TextStyle="TextStyle.Overline" Style="color:White" class="rz-display-flex rz-mt-4 rz-mb-0">Popularity</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body1" Style="color:White"><b>@(anime.Popularity)</b></RadzenText>
+                </RadzenStack>
+
+                <RadzenStack Gap="0">
+                    <RadzenText TextStyle="TextStyle.Overline" Style="color:White" class=" rz-display-flex rz-mt-2 rz-my-0">Type</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body1" Style="color:White"><b>@(anime.Media_type)</b></RadzenText>
+                    <RadzenText TextStyle="TextStyle.Overline" Style="color:White" class="rz-display-flex rz-mt-4 rz-mb-0">Year</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body1" Style="color:White"><b>@(anime.Year)</b></RadzenText>
                 </RadzenStack>
             </RadzenStack>
             <hr style="border: none; background-color: rgba(0,0,0,.2); height: 1px; margin: 1rem 0;" />
             <RadzenRow>
                 <RadzenColumn Size="8" Class="rz-text-truncate">
                     <b>Episodes: @(anime.Episodes)</b>
-                    <div style="text-align:end">
-                    <b > @(anime.Media_type) - @(anime.Score)</b>
-                    </div>
+                    
                 </RadzenColumn>
             </RadzenRow>
         </RadzenCard>

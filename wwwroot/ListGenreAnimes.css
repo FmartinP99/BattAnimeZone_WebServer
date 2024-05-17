@@ -3,6 +3,7 @@
 
 .lga-card {
     width: 450px !important;
+    max-width:50%;
     background: transparent !important;
     color: white !important;
     ;

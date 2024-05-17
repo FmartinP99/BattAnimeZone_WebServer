@@ -17,6 +17,7 @@
 
 <SearchBar></SearchBar>
 
+    <RadzenButton id="relation-button" Click="NavigateToRelationsPage" Text="RELATIONAL ANIMES"></RadzenButton>
 <RadzenRow Style="height:500px; flex:auto; Margin-bottom:30px;">
         <RadzenImage Style="display: block; max-width: 300px; max-height: 500px; height:auto; width:auto;" Path="@currentAnime.Image_large_webp_url"></RadzenImage>
         <RadzenColumn Style="min-width:100px; max-width:20vh;">
@@ -25,54 +26,19 @@
             <RadzenRow Style="height:33%; min-width:100px; padding-top:20px; padding-left:10px; padding-right:10px;">Type:<br />@currentAnime.Media_type</RadzenRow>
         </RadzenColumn>
          <RadzenColumn Style="min-width:100px; max-width:20vh;">
-            <RadzenRow Style="height:33%; min-width:100px; padding-top:20px; margin-left:10px; padding-right:10px;">Score:<br />@currentAnime.Score<br /><br />Popularity:<br />@currentAnime.Popularity</RadzenRow>
+            <RadzenRow Style="height:33%; min-width:100px; padding-top:20px; margin-left:10px; padding-right:10px;">Score:<br />@currentAnime.Score</RadzenRow>
             <RadzenRow Style="height:33%; min-width:100px; padding-top:20px; margin-left:10px; padding-right:10px;">Airing:<br />@currentAnime.Status</RadzenRow>
             <RadzenRow Style="height:33%; min-width:100px; padding-top:20px; margin-left:10px; padding-right:10px;">Aired:<br />@currentAnime.Aired_string</RadzenRow>
          </RadzenColumn>
+        <RadzenColumn Style="min-width:100px; max-width:20vh;">
+            <RadzenRow Style="height:33%; min-width:100px; padding-top:20px; margin-left:10px; padding-right:10px;">Popularity:<br />@currentAnime.Popularity</RadzenRow>
+            <RadzenRow Style="height:33%; min-width:100px; padding-top:20px; margin-left:10px; padding-right:10px;">Genres:<br />@string.Join(",\n", currentAnime.Genres.Select(g => g.Name))</RadzenRow>
+            <RadzenRow Style="height:33%; min-width:100px; padding-top:20px; margin-left:10px; padding-right:10px;">Themes:<br />@string.Join(",\n", currentAnime.Themes.Select(g => g.Name))</RadzenRow>
+        </RadzenColumn>
 
 
-            <RadzenColumn Style="min-width:100px;">
 
-            <RadzenDataGrid EmptyText="There are no relational animes! :("  TItem="Anime" CellClick="@NavigateTo" AllowFiltering="false" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="6" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
-                            Data="@relational_animes" ColumnWidth="100px" LogicalFilterOperator="LogicalFilterOperator.Or" SelectionMode="DataGridSelectionMode.Single" @bind-Value=@relational_animes>
-                <Columns>
-                    <RadzenDataGridColumn Title="Image" Frozen="false" Sortable="false" Filterable="false" Width="100px" TextAlign="TextAlign.Center">
-                        <Template Context="data">
-                            <RadzenImage Path="@data.Image_large_webp_url" class="rz-gravatar" AlternateText="NO IMAGE!" />
-                        </Template>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn Filterable="false" Title="English Name" Frozen="false" Width="200px" TextAlign="TextAlign.Center">
-                        <Template Context="data"><span style="color: white">@data.Title_english</span></Template>
-                        </RadzenDataGridColumn>
-                    <RadzenDataGridColumn  Title="Japanese Name" Frozen="false" Width="150px">
-                         <Template Context="data">
-                            <span style="color: white">@data.Title_japanese</span>
-                         </Template>
-                    </RadzenDataGridColumn>
-
-                    <RadzenDataGridColumn Title="Score" Frozen="false" Width="150px" SortOrder="SortOrder.Descending">
-                         <Template Context="data">
-                            <span style="color: white;">@data.Score</span>
-                         </Template>
-                    </RadzenDataGridColumn>
-
-                    <RadzenDataGridColumn  Title="Type" Frozen="false" Width="150px">
-                         <Template Context="data">
-                            <span style="color: white">@data.Media_type</span>
-                         </Template>
-                    </RadzenDataGridColumn>
-
-                    <RadzenDataGridColumn Title="Year" Frozen="false" Width="150px">
-                        <Template Context="data">
-                            <span style="color: white">@data.Year</span>
-                        </Template>
-                    </RadzenDataGridColumn>
-
-
-                </Columns>
-            </RadzenDataGrid>
-
-            </RadzenColumn>
+          
              
        
     </RadzenRow>
@@ -97,7 +63,7 @@
         base.OnInitialized();
     }
 
-    protected async void getCurrentAnime()
+    protected async Task getCurrentAnime()
     {
         currentAnime = await animeService.GetAnimeByID(mal_id);
 
@@ -113,9 +79,17 @@
         navManager.NavigateTo($"/anime/{anime.Data.Mal_id}", forceLoad: true);
     }
 
-    protected async void getRelationalAnimes(Anime anime)
+    protected void NavigateToRelationsPage()
+    {
+        navManager.NavigateTo($"/anime/{mal_id}/relations", forceLoad: true);
+    }
+
+    protected async Task getRelationalAnimes(Anime anime)
     {
         relational_animes = await animeService.GetRelations(anime);
-    } 
+    }
+
+  
+
 
 }
