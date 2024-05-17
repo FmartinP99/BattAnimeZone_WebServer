@@ -1,0 +1,12 @@
+﻿body {
+}
+
+
+rz-textbox {
+    background-color: black;
+    color: white;
+}
+
+#searchRow:hover {
+    border: none !important;
+}
