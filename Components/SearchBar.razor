@@ -5,7 +5,7 @@
 <h1>BattAnimeZone!!</h1>
 
 <div>
-<RadzenRow Style="Margin-bottom:50px; Width:100%;">
+<RadzenRow class="searchRow" Style="Margin-bottom:50px; Width:100%;">
 		<RadzenTextBox @bind-value=@name_to_search Style="flex:auto" @oninput=@(args => name_to_search = args.Value.ToString()) @onkeypress=@CaptureKey></RadzenTextBox>
 		<RadzenButton Click="NavigateTo" Style="width: 100px; Margin-left:10px; Margin-right:20px; background-image: linear-gradient(to right, #5832dd,#5025ce,#5832dd,#5025ce,#5832dd);" Text="Search"></RadzenButton>
 </RadzenRow>

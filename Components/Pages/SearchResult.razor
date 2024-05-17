@@ -12,38 +12,40 @@
 
 
 @if (this.similar_animes != null){
-foreach (Anime similar_anime in this.similar_animes)
+<div class="display-div">
+@foreach (Anime similar_anime in this.similar_animes)
 {
     
             <RadzenRow @onclick=@(() => NavigateTo(similar_anime.Mal_id)) Style="height:100px; margin-bottom: 30px;">
-        <RadzenColumn Style="max-width:100px; ">
+                <RadzenColumn Style="max-width:100px; display:inline-block;">
                     <RadzenImage Style="max-width:100px; max-height:100px;" Path="@similar_anime.Image_large_webp_url"></RadzenImage>
         </RadzenColumn>
-        <RadzenColumn Style="max-width:200px;">
+        <RadzenColumn Style="max-width:200px; display:inline-block;">
             English Name: <br> @similar_anime.Title_english
         </RadzenColumn>
-        <RadzenColumn Style="max-width:200px;">
+                <RadzenColumn Style="max-width:200px; display:inline-block;">
                     Japanese name: <br> @similar_anime.Title_japanese
         </RadzenColumn>
-        <RadzenColumn Style="max-width:100px;">
+                <RadzenColumn Style="max-width:100px; display:inline-block;">
                     Type: <br> @similar_anime.Media_type
         </RadzenColumn>
-        <RadzenColumn Style="max-width:100px;">
+                <RadzenColumn Style="max-width:100px; display:inline-block;">
             Episodes: <br> @similar_anime.Episodes
         </RadzenColumn>
-        <RadzenColumn Style="max-width:100px;">
+                <RadzenColumn Style="max-width:100px; display:inline-block;">
             Score: <br> @similar_anime.Score
         </RadzenColumn>
-        <RadzenColumn Style="max-width:100px;">
+                <RadzenColumn Style="max-width:100px; display:inline-block;">
             Year: <br> @similar_anime.Year
         </RadzenColumn>
-        <RadzenColumn Style="max-width:100px;">
+                <RadzenColumn Style="max-width:100px; display:inline-block;">
                     Status: <br> @similar_anime.Status
         </RadzenColumn>
         </RadzenRow>
 
 
     }
+   </div>
 }
 else if (this.similar_animes == null || this.name == "" || this.name == null)
 {

@@ -80,7 +80,7 @@ else
     {
 
         await getCurrentAnime();
-        await getRelationalAnimes(currentAnime);
+        if (currentAnime.Mal_id == -1) return;
         await getRelationTypes();
         relational_animes_per_page = relational_animes.Take(pageSize);
         count = relational_animes.Count;

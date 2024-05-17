@@ -1,9 +1,18 @@
 ﻿body {
 }
 
-.navbar-column {
+.navbar-row {
     &:hover
 {
+    border: none !important;
+}
+}
+
+.navbar-column {
+    display: table;
+
+    &:hover{
+             
     text-decoration: underline;
     box-shadow: none;
     opacity: 0.9;
