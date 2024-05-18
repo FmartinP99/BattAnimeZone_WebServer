@@ -11,8 +11,15 @@
 
 @if (found)
 {
-    <RadzenPager Style="overflow-x: clip; max-width: 25vw; ;"  PagingSummaryFormat="@pagingSummaryFormat" ShowPagingSummary="true" HorizontalAlign="HorizontalAlign.Left" PageNumbersCount=5 PageSize=@pageSize Count="count" PageChanged="@PageChanged" />
-
+    <RadzenRow Style="width:100%; display:flex;">
+        <RadzenColumn Style="min-width:62%;">
+            <RadzenPager Style="overflow-x: clip; "  PagingSummaryFormat="@pagingSummaryFormat" ShowPagingSummary="true" HorizontalAlign="HorizontalAlign.Left" PageNumbersCount=5 PageSize=@pageSize Count="count" PageChanged="@PageChanged" />
+        </RadzenColumn>
+        <RadzenColumn>
+            <RadzenLabel Text="Order by:" Component="DropDownTextValueProperties" Style="margin-right: 8px; vertical-align: middle;" />
+            <RadzenDropDown Change="onChanged" class="rzdropdown" @bind-Value=@filter_str Data=@filter_bys  Style="width: 100%; max-width: 400px;" Name="DropDownTextValueProperties" />
+        </RadzenColumn>
+</RadzenRow>
 
     <RadzenDataList WrapItems="true" AllowPaging="false" Data="@animes_per_page" TItem="Anime">
         <Template Context="anime">
@@ -61,11 +68,14 @@ else
     public int genreid { get; set; }
     List<Anime> animes = new List<Anime>();
     IEnumerable<Anime> animes_per_page = new List<Anime>();
+    string filter_str = "Score Descending";
     string pagingSummaryFormat = "Displaying page {0} of {1} (total {2} records)";
     int pageSize = 9;
     int count;
-    int pageNumber;
-
+    int last_skip = 0;
+    IEnumerable<string> filter_bys = new List<string>() {"Alphabetical ENG", "Alphabetical Descending ENG",  "Alphabetical JP", "Alphabetical Descending JP",
+    "Year", "Year Descending",
+    "Score", "Score Descending", "Popularity", "Popularity Descending", "Type", "Type Descending" };
 
     protected override async Task OnInitializedAsync()
     {
@@ -75,7 +85,6 @@ else
         {
             found = true;
             count = animes.Count;
-            pageNumber = (int)Math.Ceiling((float)count / pageSize);
             animes_per_page = animes.Take(pageSize);
 
         }
@@ -92,6 +101,54 @@ else
     void PageChanged(PagerEventArgs args)
     {
         animes_per_page = animes.Skip(args.Skip).Take(args.Top);
+        last_skip = args.Skip;
+    }
+
+    protected void onChanged()
+    {
+        Console.WriteLine(filter_str);
+        switch (filter_str)
+        {
+            case "Alphabetical ENG":
+                animes = animes.OrderBy(anime => string.IsNullOrEmpty(anime.Title_english)).ThenBy(anime => anime.Title_english).ToList();
+                break;
+            case "Alphabetical Descending ENG":
+                animes = animes.OrderBy(anime => string.IsNullOrEmpty(anime.Title_english)).ThenByDescending(anime => anime.Title_english).ToList();
+                break;
+            case "Alphabetical JP":
+                animes = animes.OrderBy(anime => string.IsNullOrEmpty(anime.Title_japanese)).ThenBy(anime => anime.Title_japanese).ToList();
+                break;
+            case "Alphabetical Descending JP":
+                animes = animes.OrderBy(anime => string.IsNullOrEmpty(anime.Title_japanese)).ThenByDescending(anime => anime.Title_japanese).ToList();
+                break;
+            case "Year":
+                animes = animes.OrderBy(anime => anime.Year == 0.0).ThenBy(anime => anime.Year).ToList();
+                break;
+            case "Year Descending":
+                animes = animes.OrderBy(anime => anime.Year == 0.0).ThenByDescending(anime => anime.Year).ToList();
+                break;
+            case "Score":
+                animes = animes.OrderBy(anime => anime.Score == 0.0).ThenBy(anime => anime.Score).ToList();
+                break;
+            case "Score Descending":
+                animes = animes.OrderBy(anime => anime.Score == 0.0).ThenByDescending(anime => anime.Score).ToList();
+                break;
+            case "Popularity":
+                animes = animes.OrderBy(anime => anime.Popularity == 0.0).ThenBy(anime => anime.Popularity).ToList();
+                break;
+            case "Popularity Descending":
+                animes = animes.OrderBy(anime => anime.Popularity == 0.0).ThenByDescending(anime => anime.Popularity).ToList();
+                break;
+            case "Type":
+                animes = animes.OrderBy(anime => string.IsNullOrEmpty(anime.Media_type)).ThenBy(anime => anime.Media_type).ToList();
+                break;
+            case "Type Descending":
+                animes = animes.OrderBy(anime => string.IsNullOrEmpty(anime.Media_type)).ThenByDescending(anime => anime.Media_type).ToList();
+                break;
+            default:
+                break;
+        }
+        animes_per_page = animes.Skip(last_skip).Take(pageSize);
     }
 
 

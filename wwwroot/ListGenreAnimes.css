@@ -15,3 +15,33 @@
     cursor: pointer;
     }
 }
+
+.rzdropdown {
+    background-image: linear-gradient(to right, #5832dd,#5025ce,#5832dd,#5025ce,#5832dd);
+    color: white;
+}
+
+.rz-dropdown-panel {
+    background-color: rgba(0,0,0,0.6);
+    color: white !important;
+}
+
+.rz-dropdown-items-wrapper{
+    background-color: transparent !important;
+    color: white !important;
+}
+
+
+.rz-dropdown-items > li{
+    background-color: transparent !important;
+    color: white !important;
+
+    &:hover
+{
+    background-image: linear-gradient(to right, #5832dd,#5025ce,#5832dd,#5025ce,#5832dd);
+}
+}
+
+
+
+
