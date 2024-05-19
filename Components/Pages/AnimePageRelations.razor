@@ -62,14 +62,14 @@ else
 
 
 
-<h3>AnimePageRelations</h3>
+
 
 @code {
     [Parameter]
     public int mal_id { get; set; }
     Anime currentAnime;
-    List<Anime> relational_animes;
-    IEnumerable<Anime> relational_animes_per_page;
+    List<Anime>? relational_animes;
+    IEnumerable<Anime>? relational_animes_per_page;
     string pagingSummaryFormat = "Displaying page {0} of {1} (total {2} records)";
     int pageSize = 9;
     int count;
@@ -81,6 +81,7 @@ else
 
         await getCurrentAnime();
         if (currentAnime.Mal_id == -1) return;
+        await getRelationalAnimes(currentAnime);
         await getRelationTypes();
         relational_animes_per_page = relational_animes.Take(pageSize);
         count = relational_animes.Count;
