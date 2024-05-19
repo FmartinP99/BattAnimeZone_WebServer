@@ -11,7 +11,7 @@
 <RadzenStack class="rz-p-0 rz-p-md-12">
 
     <RadzenCard Style="background:transparent;">
-        <RadzenPickList @bind-Source="@Source" @bind-Target="@Target" Style="height:500px; width:100%; background:transparent;" Orientation="@orientation"
+        <RadzenPickList @bind-Source="@SourceGenres" @bind-Target="@TargetGenres" Style="height:300px; width:100%; background:transparent;" Orientation="@orientation"
                         TextProperty="@nameof(AnimeGenre.Name)" AllowFiltering="@allowFilter" Multiple="@multiple" ShowHeader="@showHeader"
                         ButtonGap="@gap" ButtonJustifyContent="@justifyContent" ButtonStyle="@style" ButtonSize="@size" ButtonShade="@shade" ButtonVariant="@variant">
             <SourceHeader>
@@ -25,8 +25,19 @@
             </Template>
         </RadzenPickList>
     </RadzenCard>
-    <RadzenButton Click="SearchByGenres" Style="background-image: linear-gradient(to right, #5832dd,#5025ce,#5832dd,#5025ce,#5832dd);">FILTER ANIMES</RadzenButton>
+
+    <div class="rz-p-sm-12 rz-text-align-center">
+        <RadzenLabel Text="Select Values  (OR search)" Component="DropDownMultipleChips" Style="margin-right: 8px; vertical-align: middle;" />
+        <RadzenDropDown @bind-Value=@selected_medias Data=@media_types Name="DropDownMultipleChips"
+                        Multiple=true AllowClear=true Placeholder="Select Media Types" Chips=true Style="width: 100%; max-width: 400px;" />
+    </div>
+
+
+    <RadzenButton Click="Search" Style="background-image: linear-gradient(to right, #5832dd,#5025ce,#5832dd,#5025ce,#5832dd);">FILTER ANIMES</RadzenButton>
 </RadzenStack>
+
+
+
 
 <RadzenPager Style="overflow-x: clip; max-width: 75vw;" PagingSummaryFormat="@pagingSummaryFormat" ShowPagingSummary="true" HorizontalAlign="HorizontalAlign.Left" PageNumbersCount=@pagenumcount PageSize=@pageSize Count="count" PageChanged="@PageChanged" />
 
@@ -81,38 +92,42 @@
     bool multiple = true;
     bool showHeader = true;
 
-    IEnumerable<AnimeGenre> _source = new List<AnimeGenre>();
-    IEnumerable<AnimeGenre> Source
+    IEnumerable<AnimeGenre> _sourceGenres = new List<AnimeGenre>();
+    IEnumerable<AnimeGenre> SourceGenres
     {
         get
         {
-            return _source;
+            return _sourceGenres;
         }
         set
         {
             if (value != null)
             {
-                _source = value;
+                _sourceGenres = value;
             }
         }
     }
 
-    IEnumerable<AnimeGenre> _target = new List<AnimeGenre>();
-    IEnumerable<AnimeGenre> Target
+    IEnumerable<AnimeGenre> _targetGenres = new List<AnimeGenre>();
+    IEnumerable<AnimeGenre> TargetGenres
     {
         get
         {
-            return _target;
+            return _targetGenres;
         }
         set
         {
             if (value != null)
             {
-                _target = value;
+                _targetGenres = value;
                 foreach(var tar in value)
                 {
                     Console.WriteLine(tar.Name);
                 }
+            }
+            else
+            {
+                _targetGenres = new List<AnimeGenre>();
             }
         }
     }
@@ -123,6 +138,10 @@
 
     Dictionary<int, HashSet<int>> animesPerGenreIDs;
     List<Anime> searched_animes = new List<Anime>();
+
+    Dictionary<string, HashSet<int>> animesPerMediaTypeIDs;
+    List<string> media_types;
+    List<string> selected_medias = new List<string>();
 
 
     IEnumerable<Anime> animes_per_page = new List<Anime>();
@@ -136,11 +155,10 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await base.OnInitializedAsync();
 
+        media_types = await animeService.GetMediaTypes();
         Dictionary<int, AnimeGenre> ang = await animeService.GetGenres();
-        Source = ang.Values.ToList();
-
+        SourceGenres = ang.Values.ToList();
         animesPerGenreIDs = await animeService.GetAnimesPerGenreIds();
 
         animeCountPerGenre = animesPerGenreIDs.ToDictionary(
@@ -148,20 +166,22 @@
             kvp => kvp.Value.Count
         );
 
-        Source = Source
+        SourceGenres = SourceGenres
             .OrderByDescending(genre => animeCountPerGenre.ContainsKey(genre.Mal_id) ? animeCountPerGenre[genre.Mal_id] : 0)
             .Where(genre => animeCountPerGenre.ContainsKey(genre.Mal_id) && animeCountPerGenre[genre.Mal_id] != 0)
             .ToList();
 
+        animesPerMediaTypeIDs = await animeService.GetAnimesPerMediaTypeIds();
+
+        await base.OnInitializedAsync();
+
     }
 
-    protected async Task SearchByGenres()
-    {
 
-        if (Target == null) return;
-        if (!Target.Any()) return;
+    protected async Task<HashSet<int>> SearchByGenres()
+    {
         HashSet<int> found_animes = new HashSet<int>();
-        List<AnimeGenre> targetList = Target.ToList();
+        List<AnimeGenre> targetList = TargetGenres.ToList();
         int first_index = targetList[0].Mal_id;
         found_animes = new HashSet<int>(animesPerGenreIDs[first_index]);
         for(int i=1; i<targetList.Count; i++)
@@ -170,11 +190,47 @@
             found_animes.IntersectWith(curr_animes);
         }
 
+        return found_animes;
+
+    }
+
+    protected async Task<HashSet<int>> SearchByMediaTypes()
+    {
+        HashSet<int> commonElements = new HashSet<int>(animesPerMediaTypeIDs[selected_medias[0]]);
+        if (selected_medias.Count > 1)
+        {
+            foreach (string key in selected_medias.Skip(1))
+            {
+                commonElements.UnionWith(animesPerMediaTypeIDs[key]);
+            }
+        }
+        return commonElements;
+    }
+
+
+    protected async Task Search()
+    {
+        HashSet<int> found_animes = new HashSet<int>();
+
+        List<HashSet<int>> found_anime_ids = new List<HashSet<int>>();
+        if (!(TargetGenres == null || !TargetGenres.Any()))
+            found_anime_ids.Add(await SearchByGenres());
+        if (selected_medias != null && selected_medias.Count > 0)
+            found_anime_ids.Add(await SearchByMediaTypes());
+
+        if (found_anime_ids.Count > 0)
+        {
+            found_animes = found_anime_ids[0];
+            foreach (HashSet<int> faids in found_anime_ids.Skip(1))
+            {
+                found_animes.IntersectWith(faids);
+            }
+        }
+
         searched_animes = await animeService.GetMultipleAnimes(found_animes);
         searched_animes = searched_animes.OrderByDescending(anim => anim.Score).ToList();
         animes_per_page = searched_animes.Take(pageSize);
         count = searched_animes.Count;
-
     }
 
     void PageChanged(PagerEventArgs args)
