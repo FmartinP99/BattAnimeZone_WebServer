@@ -4,10 +4,10 @@
 .genreListRow {
     min-height: 250px;
     max-height: 250px;
-    min-width: 100vw;
+    min-width: 95vw;
     margin-bottom: 50px;
     margin-top: 50px;
-    overflow-x: auto;
+
 }
 
 
