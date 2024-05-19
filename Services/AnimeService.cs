@@ -33,7 +33,7 @@ namespace BattAnimeZone.Services
 			FillProducers();
 			FillGenres();
 			FillAnimesPerGenreIdsHash();
-			//FillAnimesPerGenreList();
+			FillAnimesPerGenreList();
 			FillAnimesPerMediaTypeIdsHas();
 
 

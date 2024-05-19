@@ -26,16 +26,22 @@
         </RadzenPickList>
     </RadzenCard>
 
-    <div class="rz-p-sm-12 rz-text-align-center">
+    <div class="rz-p-sm-12 dropdownDiv">
+        <RadzenColumn class="rz-text-align-end">
         <RadzenLabel Text="Select Values  (OR search)" Component="DropDownMultipleChips" Style="margin-right: 8px; vertical-align: middle;" />
-        <RadzenDropDown @bind-Value=@selected_medias Data=@media_types Name="DropDownMultipleChips"
+        <RadzenDropDown class="rzdropdown" @bind-Value=@selected_medias Data=@media_types Name="DropDownMultipleChips"
                         Multiple=true AllowClear=true Placeholder="Select Media Types" Chips=true Style="width: 100%; max-width: 400px;" />
+        </RadzenColumn>
+        <RadzenColumn Style="margin-top:30px;" class="rz-text-align-end">
+        <OrderComponent animes="searched_animes" AnimesChanged="OnAnimesChanged"></OrderComponent>
+        </RadzenColumn>
     </div>
+
+
 
 
     <RadzenButton Click="Search" Style="background-image: linear-gradient(to right, #5832dd,#5025ce,#5832dd,#5025ce,#5832dd);">FILTER ANIMES</RadzenButton>
 </RadzenStack>
-
 
 
 
@@ -105,6 +111,10 @@
             {
                 _sourceGenres = value;
             }
+            else
+            {
+                _sourceGenres = new List<AnimeGenre>();
+            }
         }
     }
 
@@ -150,6 +160,7 @@
     int count;
     int pageNumber;
     int pagenumcount = 15;
+    int last_skip = 0;
 
 
 
@@ -236,6 +247,15 @@
     void PageChanged(PagerEventArgs args)
     {
         animes_per_page = searched_animes.Skip(args.Skip).Take(args.Top);
+        last_skip = args.Skip;
+    }
+
+    private void OnAnimesChanged(List<Anime> updatedAnimes)
+    {
+        Console.WriteLine("OnAnimesChanged called");
+        searched_animes = updatedAnimes;
+        animes_per_page = searched_animes.Skip(last_skip).Take(pageSize);
+        StateHasChanged(); 
     }
 
     protected async void NavigateTo(int mal_id)
