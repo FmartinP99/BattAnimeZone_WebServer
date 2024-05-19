@@ -26,22 +26,21 @@
         </RadzenPickList>
     </RadzenCard>
 
-    <div class="rz-p-sm-12 dropdownDiv">
+  
         <RadzenColumn class="rz-text-align-end">
-        <RadzenLabel Text="Select Values  (OR search)" Component="DropDownMultipleChips" Style="margin-right: 8px; vertical-align: middle;" />
+        <RadzenLabel Component="DropDownMultipleChips" Style="margin-right: 8px; vertical-align: middle;" />
         <RadzenDropDown class="rzdropdown" @bind-Value=@selected_medias Data=@media_types Name="DropDownMultipleChips"
-                        Multiple=true AllowClear=true Placeholder="Select Media Types" Chips=true Style="width: 100%; max-width: 400px;" />
+                        Multiple=true AllowClear=true Placeholder="Select Media Types (OR search)" Chips=true Style="width: 100%; max-width: 400px;" />
         </RadzenColumn>
-        <RadzenColumn Style="margin-top:30px;" class="rz-text-align-end">
-        <OrderComponent animes="searched_animes" AnimesChanged="OnAnimesChanged"></OrderComponent>
-        </RadzenColumn>
-    </div>
 
-
-
-
-    <RadzenButton Click="Search" Style="background-image: linear-gradient(to right, #5832dd,#5025ce,#5832dd,#5025ce,#5832dd);">FILTER ANIMES</RadzenButton>
+    <RadzenButton Click="Search" Style="background-image: linear-gradient(to right, #5832dd,#5025ce,#5832dd,#5025ce,#5832dd); margin-top:30px;">FILTER ANIMES</RadzenButton>
 </RadzenStack>
+
+
+    <RadzenColumn class="rz-text-align-end">
+    <OrderComponent animes="searched_animes" AnimesChanged="OnAnimesChanged"></OrderComponent>
+    </RadzenColumn>
+
 
 
 
@@ -73,6 +72,9 @@
                 Score: <br> @anime.Score
             </RadzenColumn>
             <RadzenColumn Style="max-width:100px;">
+                Popularity: <br> @anime.Popularity
+            </RadzenColumn>
+            <RadzenColumn Style="max-width:100px;">
                 Year: <br> @anime.Year
             </RadzenColumn>
             <RadzenColumn Style="max-width:100px;">
@@ -81,7 +83,7 @@
         </RadzenRow>
     }
 }
-
+<RadzenPager Style="overflow-x: clip; max-width: 75vw;" PagingSummaryFormat="@pagingSummaryFormat" ShowPagingSummary="true" HorizontalAlign="HorizontalAlign.Left" PageNumbersCount=@pagenumcount PageSize=@pageSize Count="count" PageChanged="@PageChanged" />
 
 @code {
     Dictionary<int, int> animeCountPerGenre = new Dictionary<int, int>();
@@ -156,7 +158,7 @@
 
     IEnumerable<Anime> animes_per_page = new List<Anime>();
     string pagingSummaryFormat = "Displaying page {0} of {1} (total {2} records)";
-    int pageSize = 20;
+    int pageSize = 10;
     int count;
     int pageNumber;
     int pagenumcount = 15;
