@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Text;
 using F23.StringSimilarity;
 using BattAnimeZone.Components.Models.Anime;
-using BattAnimeZone.Components.Models.Producer;
+using BattAnimeZone.Components.Models.ProductionEntity;
 using BattAnimeZone.Components.Models.Genre;
 using System.Collections;
 using BattAnimeZone.Components.Pages;
@@ -20,28 +20,34 @@ namespace BattAnimeZone.Services
 	public class AnimeService
 	{
 		private Dictionary<int, Anime> animes = new Dictionary<int, Anime> { };
-		private Dictionary<int, AnimeProducer> producers = new Dictionary<int, AnimeProducer> { };
-		private Dictionary<int, AnimeGenre> genres = new Dictionary<int, AnimeGenre> { };
+
+        private Dictionary<int, ProductionEntity> productionEntities = new Dictionary<int, ProductionEntity> { };
+        private Dictionary<int, HashSet<int>> animesPerProducerIdHash = new Dictionary<int, HashSet<int>> { };
+        private Dictionary<int, HashSet<int>> animesPerLicensorIdHash = new Dictionary<int, HashSet<int>> { };
+        private Dictionary<int, HashSet<int>> animesPerStudioIdHash = new Dictionary<int, HashSet<int>> { };
+
+        private Dictionary<int, AnimeGenre> genres = new Dictionary<int, AnimeGenre> { };
 		private Dictionary<int, HashSet<int>> animesPerGenreIdsHash = new Dictionary<int, HashSet<int>>();
 		private Dictionary<int, List<Anime>> animesPerGenre = new Dictionary<int, List<Anime>>();
+
 		private List<string> mediaTypes = new List<string>();
 		private Dictionary<string, HashSet<int>> animesPerMediaTypeIdsHash = new Dictionary<string, HashSet<int>>();
 
 		public AnimeService()
 		{
-			FillAnimes();
-			FillProducers();
+			FillAnimesAndMedia();
+			FillProductionEntities();
+			FillProductionIdHashes();
 			FillGenres();
 			FillAnimesPerGenreIdsHash();
 			FillAnimesPerGenreList();
 			FillAnimesPerMediaTypeIdsHas();
 
-
         }
 
 
 
-		private void FillAnimes()
+		private void FillAnimesAndMedia()
 		{
 			using (var reader = new StreamReader("Files/mal_data_filtered_filled.csv"))
 			using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
@@ -177,7 +183,7 @@ namespace BattAnimeZone.Services
 
 
 
-		public void FillProducers()
+		public void FillProductionEntities()
 		{
 			using (var reader = new StreamReader("Files/mal_producers.csv"))
 			using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
@@ -186,9 +192,9 @@ namespace BattAnimeZone.Services
 				csv.ReadHeader();
 				while (csv.Read())
 				{
-					List<ProducerTitle> producerTitle = JsonConvert.DeserializeObject<List<ProducerTitle>>(csv.GetField("titles"));
+					List<ProductionEntityTitle> producerTitle = JsonConvert.DeserializeObject<List<ProductionEntityTitle>>(csv.GetField("titles"));
 
-					AnimeProducer new_producer = new AnimeProducer
+					ProductionEntity new_producer = new ProductionEntity
 					{
 						Mal_id = csv.GetField<int>("mal_id"),
 						Url = csv.GetField("url"),
@@ -200,13 +206,54 @@ namespace BattAnimeZone.Services
 						Image_url = csv.GetField("images.jpg.image_url"),
 
 					};
-					producers.Add(new_producer.Mal_id, new_producer);
+					productionEntities.Add(new_producer.Mal_id, new_producer);
 
 				}
 			}
 		}
 
-		public void FillGenres()
+		public void FillProductionIdHashes()
+		{
+			Dictionary<int, HashSet<int>> producerhashes = new Dictionary<int, HashSet<int>>();
+			Dictionary<int, HashSet<int>> licensorhashes = new Dictionary<int, HashSet<int>>();
+            Dictionary<int, HashSet<int>> studiohashes = new Dictionary<int, HashSet<int>>();
+
+			foreach (int prodentkey in productionEntities.Keys) {
+				producerhashes[prodentkey] = new HashSet<int>();
+                licensorhashes[prodentkey] = new HashSet<int>();
+                studiohashes[prodentkey] = new HashSet<int>();
+			}
+
+			foreach (Anime anim in this.animes.Values)
+			{
+
+				foreach(Producer prod in anim.Producers)
+				{
+					if(productionEntities.Keys.Contains(prod.Mal_id))
+					producerhashes[prod.Mal_id].Add(anim.Mal_id);
+				}
+
+                foreach (Licensor licensor in anim.Licensors)
+                {
+                    if (productionEntities.Keys.Contains(licensor.Mal_id))
+                        producerhashes[licensor.Mal_id].Add(anim.Mal_id);
+                }
+
+                foreach (Studio studio in anim.Studios)
+                {
+                    if (productionEntities.Keys.Contains(studio.Mal_id))
+                        producerhashes[studio.Mal_id].Add(anim.Mal_id);
+                }
+
+            }
+
+			this.animesPerProducerIdHash = producerhashes;
+			this.animesPerLicensorIdHash = licensorhashes;
+			this.animesPerStudioIdHash = studiohashes;
+        }
+
+
+        public void FillGenres()
 		{
 			using (var reader = new StreamReader("Files/mal_anime_genres.csv"))
 			using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
@@ -336,13 +383,29 @@ namespace BattAnimeZone.Services
 			return Task.FromResult(this.genres);
 		}
 
-		public Task<Dictionary<int, AnimeProducer>> GetProducers()
+		public Task<Dictionary<int, ProductionEntity>> GetProductionEntities()
 		{
-			return Task.FromResult(this.producers);
+			return Task.FromResult(this.productionEntities);
 		}
 
+        public Task<Dictionary<int, HashSet<int>>> GetAnimePerProducerIds()
+        {
+            return Task.FromResult(this.animesPerProducerIdHash);
+        }
 
-		public async Task<List<Anime>> GetSimilarAnimes(int n, string name)
+        public Task<Dictionary<int, HashSet<int>>> GetAnimePerLicensorIds()
+        {
+            return Task.FromResult(this.animesPerLicensorIdHash);
+        }
+
+        public Task<Dictionary<int, HashSet<int>>> GetAnimePerStudioIds()
+        {
+            return Task.FromResult(this.animesPerStudioIdHash);
+        }
+
+
+
+        public async Task<List<Anime>> GetSimilarAnimes(int n, string name)
 		{
 			name = name.ToLower();
 

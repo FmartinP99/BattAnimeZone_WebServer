@@ -1,5 +1,5 @@
 ﻿@using BattAnimeZone.Services
-@using BattAnimeZone.Components.Models.Producer
+@using BattAnimeZone.Components.Models.ProductionEntity
 @inject AnimeService animeService
 @page "/studiolist"
 
@@ -13,12 +13,12 @@
 
 @code {
 
-    Dictionary<int, AnimeProducer> animeProducers;
+    Dictionary<int, ProductionEntity> animeProducers;
 
 
     protected override async Task OnInitializedAsync()
     {
-        animeProducers = await animeService.GetProducers();
+        animeProducers = await animeService.GetProductionEntities();
         base.OnInitialized();
     }
 

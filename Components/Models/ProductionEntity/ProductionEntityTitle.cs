@@ -1,6 +1,6 @@
-﻿namespace BattAnimeZone.Components.Models.Producer
+﻿namespace BattAnimeZone.Components.Models.ProductionEntity
 {
-	public class ProducerTitle
+	public class ProductionEntityTitle
 	{
 		string Type { get; set; } = string.Empty;
 		string Title { get; set; } = string.Empty;

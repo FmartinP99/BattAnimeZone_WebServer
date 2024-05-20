@@ -1,10 +1,10 @@
-﻿namespace BattAnimeZone.Components.Models.Producer
+﻿namespace BattAnimeZone.Components.Models.ProductionEntity
 {
-	public class AnimeProducer
+	public class ProductionEntity
 	{
 		public int Mal_id { get; set; } = -1;
 		public string Url { get; set; } = string.Empty;
-		public List<ProducerTitle> Titles { get; set; } = new List<ProducerTitle>();
+		public List<ProductionEntityTitle> Titles { get; set; } = new List<ProductionEntityTitle>();
 		public int Favorites { get; set; } = -1;
 		public string Established { get; set; } = string.Empty;
 		public string About { get; set; } = string.Empty;
