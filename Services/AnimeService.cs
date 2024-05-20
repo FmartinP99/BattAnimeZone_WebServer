@@ -236,13 +236,13 @@ namespace BattAnimeZone.Services
                 foreach (Licensor licensor in anim.Licensors)
                 {
                     if (productionEntities.Keys.Contains(licensor.Mal_id))
-                        producerhashes[licensor.Mal_id].Add(anim.Mal_id);
+                        licensorhashes[licensor.Mal_id].Add(anim.Mal_id);
                 }
 
                 foreach (Studio studio in anim.Studios)
                 {
                     if (productionEntities.Keys.Contains(studio.Mal_id))
-                        producerhashes[studio.Mal_id].Add(anim.Mal_id);
+                        studiohashes[studio.Mal_id].Add(anim.Mal_id);
                 }
 
             }

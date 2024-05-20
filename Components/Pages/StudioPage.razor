@@ -5,8 +5,7 @@
 @using System.Globalization
 @inject AnimeService animeService
 @page "/studio/{prodent_id:int}"
-<link rel="stylesheet" href="/AnimePage.css" />
-
+<link rel="stylesheet" href="/StudioPage.css" />
 
 <PageTitle>StudioPage</PageTitle>
 
@@ -14,16 +13,67 @@
 <SearchBar></SearchBar>
 
 @if (currentProductionEntity.Mal_id != -1 ){
-<RadzenRow Style="height:500px; flex:auto; Margin-bottom:30px;">
+<RadzenRow Style="height:600px; flex:auto; Margin-bottom:30px;">
     <RadzenImage Style="display: block; max-width: 300px; max-height: 500px; height:auto; width:auto;" Path="@currentProductionEntity.Image_url"></RadzenImage>
     <RadzenColumn Style="min-width:100px; max-width:20vh;">
-        <RadzenRow Style="height:33%; min-width:100px; padding-top:20px; padding-left:10px; padding-right:10px;">English Name:<br />@GetTitle("English") </RadzenRow>
-            <RadzenRow Style="height:33%; min-width:100px; padding-top:20px; padding-left:10px; padding-right:10px;">Japanese Name:<br />@GetTitle("Japanese") </RadzenRow>
-            <RadzenRow Style="height:33%; min-width:100px; padding-top:20px; padding-left:10px; padding-right:10px;">Established:<br />@currentDateTimeString</RadzenRow>
+            <div class="rowDiv"><span class="titleSpan">English Name:</span><br />@GetTitle("English") </div>
+            <div class="rowDiv"><span class="titleSpan">Japanese Name:</span><br />@GetTitle("Japanese") </div>
+            <div class="rowDiv"><span class="titleSpan">Established:</span><br />@currentDateTimeString</div>
     </RadzenColumn>
     <RadzenColumn Style="min-width:100px; max-width:20vh;">
-        <RadzenRow Style="height:33%; min-width:100px; padding-top:20px; margin-left:10px; padding-right:10px;">Favorites:<br />@currentProductionEntity.Favorites</RadzenRow>
-        <RadzenRow Style="height:33%; min-width:100px; padding-top:20px; margin-left:10px; padding-right:10px;">Title Count:<br />@currentProductionEntity.Count</RadzenRow>
+            <div class="rowDiv"><span class="titleSpan">Favorites:</span><br />@currentProductionEntity.Favorites</div>
+            <div class="rowDiv"><span class="titleSpan">Title Count:</span><br />@currentProductionEntity.Count</div>
+    </RadzenColumn>
+
+    <RadzenColumn Style="min-width:100px;">
+        <RadzenRow>
+            <RadzenColumn> 
+                <RadzenPager @ref=pager Style="overflow-x: clip; " PagingSummaryFormat="@pagingSummaryFormat" ShowPagingSummary="true" HorizontalAlign="HorizontalAlign.Left" PageNumbersCount=5 PageSize=@pageSize Count="count" PageChanged="@PageChanged" />
+            </RadzenColumn>
+            <RadzenColumn class="rz-text-align-end">
+                    @if (producerAnimes.Count > 0)
+                    {
+                        <RadzenButton Click
+                        ="@(async () => await changeSelectedAnimes("PRODUCER"))" Style
+                        =" background-image: linear-gradient(to right, #5832dd,#5025ce,#5832dd,#5025ce,#5832dd);" Text
+                        ="Producer"></RadzenButton>
+                    }
+                    @if (licensorAnimes.Count > 0)
+                    {
+                        <RadzenButton Click
+                        ="@(async () => await changeSelectedAnimes("LICENSOR"))" Style
+                        =" background-image: linear-gradient(to right, #5832dd,#5025ce,#5832dd,#5025ce,#5832dd);" Text
+                        ="Licensor"></RadzenButton>
+                    }
+                    @if (studioAnimes.Count > 0)
+                    {
+                        <RadzenButton Click
+                        ="@(async () => await changeSelectedAnimes("STUDIO"))" Style
+                        =" background-image: linear-gradient(to right, #5832dd,#5025ce,#5832dd,#5025ce,#5832dd);" Text
+                        ="Studio"></RadzenButton>
+                    }
+            </RadzenColumn>
+        </RadzenRow>
+
+        <RadzenRow>
+            <RadzenDataList WrapItems="true" AllowPaging="false" Data="@currentlyViewedAnimes" TItem="Anime">
+                <Template Context="anime">
+                    <RadzenCard class="lga-card" @onclick="@(() => NavigateTo(anime.Mal_id))">
+                        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
+                            <RadzenImage Path="@anime.Image_large_webp_url" Style="width: 100px; height: 100px; border-radius: 15%" AlternateText="no image" />
+                            <RadzenStack Gap="0" Style="width:70%">
+                                <RadzenText TextStyle="TextStyle.Overline" Style="color:White" class=" rz-display-flex rz-mt-2 rz-my-0">English Name</RadzenText>
+                                <RadzenText TextStyle="TextStyle.Body1" Style="color:White"><b>@TruncateTitles(anime.Title_english, 45)</b></RadzenText>
+                                <RadzenText TextStyle="TextStyle.Overline" Style="color:White" class="rz-display-flex rz-mt-4 rz-mb-0">Japanese Name</RadzenText>
+                                <RadzenText TextStyle="TextStyle.Body1" Style="color:White"><b>@TruncateTitles(anime.Title_japanese, 30)</b></RadzenText>
+                            </RadzenStack>
+                        </RadzenStack>
+                          
+                    </RadzenCard>
+                </Template>
+            </RadzenDataList>
+
+        </RadzenRow>
     </RadzenColumn>
     </RadzenRow>
 
@@ -33,22 +83,25 @@
 }
 
 
-
-
-
-
-
-
-
 @code {
     [Parameter]
     public int prodent_id { get; set; }
     ProductionEntity currentProductionEntity {get; set;}
+
     List<Anime> producerAnimes = new List<Anime>();
     List<Anime> licensorAnimes = new List<Anime>();
     List<Anime> studioAnimes = new List<Anime>();
-    List<Anime> currentlyViewedAnimes = new List<Anime>();
+
+    List<Anime> currentlySelectedAnimes;
+    IEnumerable<Anime> currentlyViewedAnimes;
+
     String currentDateTimeString;
+
+    RadzenPager pager;
+    string pagingSummaryFormat = "Displaying page {0} of {1} (total {2} records)";
+    int pageSize = 6;
+    int count;
+    int last_skip = 0;
 
 
     protected override async Task OnInitializedAsync()
@@ -56,14 +109,26 @@
 
         currentProductionEntity = await animeService.GetProductionEntityById(prodent_id);
         if (currentProductionEntity.Mal_id == -1) return;
+
         producerAnimes = await animeService.GetMultipleAnimes(await animeService.GetAnimesOfProducer(prodent_id));
         licensorAnimes = await animeService.GetMultipleAnimes(await animeService.GetAnimesOfLicensor(prodent_id));
         studioAnimes = await animeService.GetMultipleAnimes(await animeService.GetAnimesOfStudio(prodent_id));
 
-        DateTime currentDateTime = DateTime.Parse(currentProductionEntity.Established);
-
-        string monthName = new DateTimeFormatInfo().GetMonthName(currentDateTime.Month);
-        currentDateTimeString = currentDateTime.Year + "-" + monthName + "-" + currentDateTime.Day;
+        if (studioAnimes.Count > 0) currentlySelectedAnimes = studioAnimes;
+        else if (producerAnimes.Count > 0) currentlySelectedAnimes = producerAnimes;
+        else currentlySelectedAnimes = licensorAnimes;
+        count = currentlySelectedAnimes.Count;
+        currentlyViewedAnimes = currentlySelectedAnimes.Take(pageSize);
+        DateTime currentDateTime;
+        if (DateTime.TryParse(currentProductionEntity.Established, out currentDateTime))
+        {
+            string monthName = new DateTimeFormatInfo().GetMonthName(currentDateTime.Month);
+            currentDateTimeString = currentDateTime.Year + "-" + monthName + "-" + currentDateTime.Day;
+        }
+        else
+        {
+            currentDateTimeString = "";
+        }
 
         base.OnInitialized();
     }
@@ -73,6 +138,35 @@
     {
         var prodtitle = currentProductionEntity.Titles.FirstOrDefault(title => title.Type == keyword);
         var defaultTitle = currentProductionEntity.Titles.FirstOrDefault(title => title.Type == "Default");
-        return prodtitle?.Title ?? defaultTitle.Title ?? "--No Title Found--";
+        return prodtitle?.Title ?? defaultTitle.Title ?? "--No Title Found--"; ;
+    }
+
+    private string TruncateTitles(string title, int title_length)
+    {
+        if (title.Length <= title_length) return title; 
+        return title.Substring(0, title_length - 3) + "...";
+    }
+
+    void PageChanged(PagerEventArgs args)
+    {
+        currentlyViewedAnimes = currentlySelectedAnimes.Skip(args.Skip).Take(args.Top);
+        last_skip = args.Skip;
+    }
+
+    private async Task changeSelectedAnimes(string key)
+    {
+        if (key == "PRODUCER") currentlySelectedAnimes = producerAnimes;
+        else if (key == "LICENSOR") currentlySelectedAnimes = licensorAnimes;
+        else if (key == "STUDIO") currentlySelectedAnimes = studioAnimes;
+        count = currentlySelectedAnimes.Count;
+        currentlyViewedAnimes = currentlySelectedAnimes.Take(pageSize);
+        last_skip = 0;
+        await pager.GoToPage(0);
+    } 
+
+    protected async void NavigateTo(int mal_id)
+    {
+
+        navManager.NavigateTo($"/anime/{mal_id}");
     }
 }

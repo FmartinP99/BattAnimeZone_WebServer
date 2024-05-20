@@ -11,3 +11,28 @@
 #relation-button{
     margin-bottom:30px;
 }
+
+.prodentSpan {
+    font-weight: 540;
+    font-size: 16px;
+    font-style: italic;
+    &:hover
+{
+    text-decoration: underline;
+    
+}
+}
+
+.titleSpan{
+    font-weight: 700;
+    font-size:20px;
+    display:inline;
+}
+
+.rowDiv {
+    height: 33%;
+    min-width: 100px;
+    padding-top: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
