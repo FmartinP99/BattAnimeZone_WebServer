@@ -2,22 +2,53 @@
 @using BattAnimeZone.Components.Models.Anime
 @using BattAnimeZone.Components.Models.ProductionEntity
 @using BattAnimeZone.Services
+@using System.Globalization
 @inject AnimeService animeService
 @page "/studio/{prodent_id:int}"
 <link rel="stylesheet" href="/AnimePage.css" />
 
 
+<PageTitle>StudioPage</PageTitle>
 
-<h3>StudioPage</h3>
+
+<SearchBar></SearchBar>
+
+@if (currentProductionEntity.Mal_id != -1 ){
+<RadzenRow Style="height:500px; flex:auto; Margin-bottom:30px;">
+    <RadzenImage Style="display: block; max-width: 300px; max-height: 500px; height:auto; width:auto;" Path="@currentProductionEntity.Image_url"></RadzenImage>
+    <RadzenColumn Style="min-width:100px; max-width:20vh;">
+        <RadzenRow Style="height:33%; min-width:100px; padding-top:20px; padding-left:10px; padding-right:10px;">English Name:<br />@GetTitle("English") </RadzenRow>
+            <RadzenRow Style="height:33%; min-width:100px; padding-top:20px; padding-left:10px; padding-right:10px;">Japanese Name:<br />@GetTitle("Japanese") </RadzenRow>
+            <RadzenRow Style="height:33%; min-width:100px; padding-top:20px; padding-left:10px; padding-right:10px;">Established:<br />@currentDateTimeString</RadzenRow>
+    </RadzenColumn>
+    <RadzenColumn Style="min-width:100px; max-width:20vh;">
+        <RadzenRow Style="height:33%; min-width:100px; padding-top:20px; margin-left:10px; padding-right:10px;">Favorites:<br />@currentProductionEntity.Favorites</RadzenRow>
+        <RadzenRow Style="height:33%; min-width:100px; padding-top:20px; margin-left:10px; padding-right:10px;">Title Count:<br />@currentProductionEntity.Count</RadzenRow>
+    </RadzenColumn>
+    </RadzenRow>
+
+    <RadzenRow Style="width: 100%; Padding-bottom:50px;">
+        @currentProductionEntity.About
+    </RadzenRow>
+}
+
+
+
+
+
+
+
+
 
 @code {
     [Parameter]
     public int prodent_id { get; set; }
-    ProductionEntity currentProductionEntity;
+    ProductionEntity currentProductionEntity {get; set;}
     List<Anime> producerAnimes = new List<Anime>();
     List<Anime> licensorAnimes = new List<Anime>();
     List<Anime> studioAnimes = new List<Anime>();
     List<Anime> currentlyViewedAnimes = new List<Anime>();
+    String currentDateTimeString;
 
 
     protected override async Task OnInitializedAsync()
@@ -25,15 +56,23 @@
 
         currentProductionEntity = await animeService.GetProductionEntityById(prodent_id);
         if (currentProductionEntity.Mal_id == -1) return;
-        HashSet<int>  producerAnimeIds = await animeService.GetAnimesOfProducer(prodent_id);
-        HashSet<int> licensorAnimeIds = await animeService.GetAnimesOfLicensor(prodent_id);
-        HashSet<int> studioAnimeIds = await animeService.GetAnimesOfStudio(prodent_id);
+        producerAnimes = await animeService.GetMultipleAnimes(await animeService.GetAnimesOfProducer(prodent_id));
+        licensorAnimes = await animeService.GetMultipleAnimes(await animeService.GetAnimesOfLicensor(prodent_id));
+        studioAnimes = await animeService.GetMultipleAnimes(await animeService.GetAnimesOfStudio(prodent_id));
 
-        producerAnimes = await animeService.GetMultipleAnimes(producerAnimeIds);
-        licensorAnimes = await animeService.GetMultipleAnimes(licensorAnimeIds);
-        studioAnimes = await animeService.GetMultipleAnimes(studioAnimeIds);
+        DateTime currentDateTime = DateTime.Parse(currentProductionEntity.Established);
 
-        
+        string monthName = new DateTimeFormatInfo().GetMonthName(currentDateTime.Month);
+        currentDateTimeString = currentDateTime.Year + "-" + monthName + "-" + currentDateTime.Day;
+
         base.OnInitialized();
+    }
+
+
+    private string GetTitle(string keyword)
+    {
+        var prodtitle = currentProductionEntity.Titles.FirstOrDefault(title => title.Type == keyword);
+        var defaultTitle = currentProductionEntity.Titles.FirstOrDefault(title => title.Type == "Default");
+        return prodtitle?.Title ?? defaultTitle.Title ?? "--No Title Found--";
     }
 }

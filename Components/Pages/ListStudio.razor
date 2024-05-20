@@ -58,7 +58,8 @@
     private string GetTitle(ProductionEntity prodent, string keyword)
     {
         var prodtitle = prodent.Titles.FirstOrDefault(title => title.Type == keyword);
-        return prodtitle?.Title ?? "No Title Found";
+        var defaultTitle = prodent.Titles.FirstOrDefault(title => title.Type == "Default");
+        return prodtitle?.Title ?? defaultTitle.Title ?? "--No Title Found--";
     }
 
     void PageChanged(PagerEventArgs args)
