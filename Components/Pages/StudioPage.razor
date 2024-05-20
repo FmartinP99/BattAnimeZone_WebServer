@@ -1,0 +1,39 @@
+﻿@inject NavigationManager navManager
+@using BattAnimeZone.Components.Models.Anime
+@using BattAnimeZone.Components.Models.ProductionEntity
+@using BattAnimeZone.Services
+@inject AnimeService animeService
+@page "/studio/{prodent_id:int}"
+<link rel="stylesheet" href="/AnimePage.css" />
+
+
+
+<h3>StudioPage</h3>
+
+@code {
+    [Parameter]
+    public int prodent_id { get; set; }
+    ProductionEntity currentProductionEntity;
+    List<Anime> producerAnimes = new List<Anime>();
+    List<Anime> licensorAnimes = new List<Anime>();
+    List<Anime> studioAnimes = new List<Anime>();
+    List<Anime> currentlyViewedAnimes = new List<Anime>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        currentProductionEntity = await animeService.GetProductionEntityById(prodent_id);
+        if (currentProductionEntity.Mal_id == -1) return;
+        HashSet<int>  producerAnimeIds = await animeService.GetAnimesOfProducer(prodent_id);
+        HashSet<int> licensorAnimeIds = await animeService.GetAnimesOfLicensor(prodent_id);
+        HashSet<int> studioAnimeIds = await animeService.GetAnimesOfStudio(prodent_id);
+
+        producerAnimes = await animeService.GetMultipleAnimes(producerAnimeIds);
+        licensorAnimes = await animeService.GetMultipleAnimes(licensorAnimeIds);
+        studioAnimes = await animeService.GetMultipleAnimes(studioAnimeIds);
+
+        
+        base.OnInitialized();
+    }
+}

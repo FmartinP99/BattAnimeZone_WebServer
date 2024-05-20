@@ -388,6 +388,13 @@ namespace BattAnimeZone.Services
 			return Task.FromResult(this.productionEntities);
 		}
 
+        public async Task<ProductionEntity> GetProductionEntityById(int prodid)
+        {
+            ProductionEntity prodent;
+            if (this.productionEntities.TryGetValue(prodid, out prodent)) return prodent;
+            return new ProductionEntity();
+        }
+
         public Task<Dictionary<int, HashSet<int>>> GetAnimePerProducerIds()
         {
             return Task.FromResult(this.animesPerProducerIdHash);
@@ -401,6 +408,28 @@ namespace BattAnimeZone.Services
         public Task<Dictionary<int, HashSet<int>>> GetAnimePerStudioIds()
         {
             return Task.FromResult(this.animesPerStudioIdHash);
+        }
+
+
+        public Task<HashSet<int>> GetAnimesOfProducer(int prodid)
+        {
+			HashSet<int> animes;
+            if (this.animesPerProducerIdHash.TryGetValue(prodid, out animes)) return Task.FromResult(animes);
+			return Task.FromResult(new HashSet<int>());
+        }
+
+        public Task<HashSet<int>> GetAnimesOfLicensor(int prodid)
+        {
+            HashSet<int> animes;
+            if (this.animesPerLicensorIdHash.TryGetValue(prodid, out animes)) return Task.FromResult(animes);
+            return Task.FromResult(new HashSet<int>());
+        }
+
+        public Task<HashSet<int>> GetAnimesOfStudio(int prodid)
+        {
+            HashSet<int> animes;
+            if (this.animesPerStudioIdHash.TryGetValue(prodid, out animes)) return Task.FromResult(animes);
+            return Task.FromResult(new HashSet<int>());
         }
 
 
