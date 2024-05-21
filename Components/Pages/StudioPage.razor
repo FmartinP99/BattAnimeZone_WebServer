@@ -13,7 +13,9 @@
 <SearchBar></SearchBar>
 
 @if (currentProductionEntity.Mal_id != -1 ){
-<RadzenRow Style="height:600px; flex:auto; Margin-bottom:30px;">
+    <RadzenButton id="relation-button" Click="NavigateToMALStudio" Text="MAL LINK" Style="background-image: linear-gradient(to right, #5832dd,#5025ce,#5832dd,#5025ce,#5832dd); margin-bottom:30px;"></RadzenButton>
+
+<RadzenRow Style="height:500px; flex:auto; Margin-bottom:30px;">
     <RadzenImage Style="display: block; max-width: 300px; max-height: 500px; height:auto; width:auto;" Path="@currentProductionEntity.Image_url"></RadzenImage>
     <RadzenColumn Style="min-width:100px; max-width:20vh;">
             <div class="rowDiv"><span class="titleSpan">English Name:</span><br />@GetTitle("English") </div>
@@ -77,31 +79,38 @@
     </RadzenColumn>
     </RadzenRow>
 
-    <RadzenRow Style="width: 100%; Padding-bottom:50px;">
-        @currentProductionEntity.About
-    </RadzenRow>
+
+    <div class="titleSpan">
+        About:
+        <hr />
+        <div class="aboutDiv">
+            @currentProductionEntity.About
+        </div>
+        <hr />
+    </div>
+
 }
 
 
 @code {
-        [Parameter]
-        public int prodent_id { get; set; }
-        ProductionEntity currentProductionEntity {get; set;}
+    [Parameter]
+    public int prodent_id { get; set; }
+    ProductionEntity currentProductionEntity {get; set;}
 
-        List<Anime> producerAnimes = new List<Anime>();
-        List<Anime> licensorAnimes = new List<Anime>();
-        List<Anime> studioAnimes = new List<Anime>();
+    List<Anime> producerAnimes = new List<Anime>();
+    List<Anime> licensorAnimes = new List<Anime>();
+    List<Anime> studioAnimes = new List<Anime>();
 
-        List<Anime> currentlySelectedAnimes;
-        IEnumerable<Anime> currentlyViewedAnimes;
+    List<Anime> currentlySelectedAnimes;
+    IEnumerable<Anime> currentlyViewedAnimes;
 
-        String currentDateTimeString;
+    String currentDateTimeString;
 
-        RadzenPager pager;
-        string pagingSummaryFormat = "Displaying page {0} of {1} (total {2} records)";
-        int pageSize = 6;
-        int count;
-        int last_skip = 0;
+    RadzenPager pager;
+    string pagingSummaryFormat = "Displaying page {0} of {1} (total {2} records)";
+    int pageSize = 6;
+    int count;
+    int last_skip = 0;
 
 
     protected override async Task OnInitializedAsync()
@@ -113,7 +122,7 @@
         producerAnimes = await animeService.GetMultipleAnimes(await animeService.GetAnimesOfProducer(prodent_id));
         licensorAnimes = await animeService.GetMultipleAnimes(await animeService.GetAnimesOfLicensor(prodent_id));
         studioAnimes = await animeService.GetMultipleAnimes(await animeService.GetAnimesOfStudio(prodent_id));
-   
+
         if (studioAnimes.Count > 0) currentlySelectedAnimes = studioAnimes;
         else if (producerAnimes.Count > 0) currentlySelectedAnimes = producerAnimes;
         else currentlySelectedAnimes = licensorAnimes;
@@ -168,5 +177,10 @@
     {
 
         navManager.NavigateTo($"/anime/{mal_id}");
+    }
+
+    protected void NavigateToMALStudio()
+    {
+        navManager.NavigateTo($"https://myanimelist.net/anime/producer/{prodent_id}");
     }
 }

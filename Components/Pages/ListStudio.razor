@@ -12,7 +12,6 @@
         <RadzenPager Style="overflow-x: clip; " PagingSummaryFormat="@pagingSummaryFormat" ShowPagingSummary="true" HorizontalAlign="HorizontalAlign.Left" PageNumbersCount=12 PageSize=@pageSize Count="count" PageChanged="@PageChanged" />
     </RadzenColumn>
 </RadzenRow>
-
 <RadzenDataList WrapItems="true" AllowPaging="false" Data="@prodents_per_page" TItem="ProductionEntity">
     <Template Context="prodent">
         <RadzenCard class="lga-card" @onclick="@(() => NavigateTo(prodent.Mal_id))">

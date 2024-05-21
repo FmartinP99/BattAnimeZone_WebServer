@@ -36,7 +36,8 @@
     <RadzenButton Click="Search" Style="background-image: linear-gradient(to right, #5832dd,#5025ce,#5832dd,#5025ce,#5832dd); margin-top:30px;">FILTER ANIMES</RadzenButton>
 </RadzenStack>
 
-
+@if (searched_animes.Count > 0)
+{
     <RadzenColumn class="rz-text-align-end">
     <OrderComponent animes="searched_animes" AnimesChanged="OnAnimesChanged"></OrderComponent>
     </RadzenColumn>
@@ -46,7 +47,7 @@
 
 <RadzenPager @ref=pager Style="overflow-x: clip; max-width: 75vw;" PagingSummaryFormat="@pagingSummaryFormat" ShowPagingSummary="true" HorizontalAlign="HorizontalAlign.Left" PageNumbersCount=@pagenumcount PageSize=@pageSize Count="count" PageChanged="@PageChanged" />
 
-@if (searched_animes.Count > 0){
+
 
 
 
@@ -82,9 +83,9 @@
             </RadzenColumn>
         </RadzenRow>
     }
-}
-<RadzenPager @ref=pager2 Style="overflow-x: clip; max-width: 75vw;" PagingSummaryFormat="@pagingSummaryFormat" ShowPagingSummary="true" HorizontalAlign="HorizontalAlign.Left" PageNumbersCount=@pagenumcount PageSize=@pageSize Count="count" PageChanged="@PageChanged" />
 
+<RadzenPager @ref=pager2 Style="overflow-x: clip; max-width: 75vw;" PagingSummaryFormat="@pagingSummaryFormat" ShowPagingSummary="true" HorizontalAlign="HorizontalAlign.Left" PageNumbersCount=@pagenumcount PageSize=@pageSize Count="count" PageChanged="@PageChanged" />
+}
 @code {
     Dictionary<int, int> animeCountPerGenre = new Dictionary<int, int>();
 

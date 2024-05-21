@@ -14,7 +14,8 @@
 <SearchBar></SearchBar>
 
     <RadzenButton id="relation-button" Click="NavigateToRelationsPage" Text="RELATIONAL ANIMES" Style="background-image: linear-gradient(to right, #5832dd,#5025ce,#5832dd,#5025ce,#5832dd);"></RadzenButton>
-<RadzenRow Style="height:600px; flex:auto; Margin-bottom:30px;">
+    <RadzenButton id="relation-button" Click="NavigateToMALAnime" Text="MAL LINK" Style="background-image: linear-gradient(to right, #5832dd,#5025ce,#5832dd,#5025ce,#5832dd);"></RadzenButton>
+<RadzenRow Style="height:500px; flex:auto; margin-bottom:20px;">
         <RadzenImage Style="display: block; max-width: 300px; max-height: 500px; height:auto; width:auto;" Path="@currentAnime.Image_large_webp_url"></RadzenImage>
         <RadzenColumn Style="min-width:200px; max-width:20vh; margin-left:20px;">
             <div class="rowDiv"><span class="titleSpan">Name(s):</span><br />@TruncateTitles(currentAnime.Title_english, 45)<br /><hr />@TruncateTitles(currentAnime.Title_japanese, 30) </div>
@@ -56,16 +57,17 @@
                 } </Div>
             </RadzenColumn>
 
-
-
-          
-             
-       
     </RadzenRow>
-
-<RadzenRow Style="width: 100%; Padding-bottom:50px;">
-    @currentAnime.Synopsis
-</RadzenRow>
+ 
+   
+    <div class="synopsisHeaderDiv titleSpan">
+        Synopsis:
+        <hr />
+    <div class="synopsisDiv">
+        @currentAnime.Synopsis
+    </div>
+    <hr />
+ </div>
 
 
 </div>
@@ -106,10 +108,11 @@
         navManager.NavigateTo($"./studio/{prodent_id}");
     }
 
-    protected void NavigateTo(DataGridCellMouseEventArgs<Anime> anime)
-    {   
-        navManager.NavigateTo($"/anime/{anime.Data.Mal_id}", forceLoad: true);
+    protected void NavigateToMALAnime()
+    {
+        navManager.NavigateTo($"https://myanimelist.net/anime/{mal_id}");
     }
+
 
     protected void NavigateToRelationsPage()
     {

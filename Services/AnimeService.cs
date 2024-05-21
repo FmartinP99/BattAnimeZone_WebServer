@@ -126,6 +126,7 @@ namespace BattAnimeZone.Services
 					{
 						Mal_id = csv.GetField<int>("mal_id"),
 						Url = csv.GetField("url"),
+						Title = csv.GetField("title"),
 						Title_english = csv.GetField("title_english"),
 						Title_japanese = csv.GetField("title_japanese"),
 						Ttile_synonyms = title_synonyms,
@@ -377,6 +378,15 @@ namespace BattAnimeZone.Services
 			}
 			return animelist;
 		}
+
+
+		public Task<IEnumerable<Anime>> GetAnimesByYear(int year)
+		{
+			IEnumerable<Anime> animes_by_year = this.animes.Where(anime => anime.Value.Year == year).OrderBy(anime => anime.Value.Popularity).Select(anime => anime.Value);
+			return Task.FromResult(animes_by_year);
+
+		}
+
 
 		public Task<Dictionary<int, AnimeGenre>> GetGenres()
 		{

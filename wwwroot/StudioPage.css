@@ -18,6 +18,13 @@
 }
 
 
+.aboutDiv {
+    font-family: 'Arial';
+    font-weight: 400;
+    font-size: 17px;
+    padding-right: 20px;
+}
+
 .lga-card {
     width: 350px !important;
     max-width: 350px !important;
@@ -35,4 +42,6 @@
     opacity: 0.9;
     cursor: pointer;
 }
+
+
 
