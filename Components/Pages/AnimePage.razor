@@ -41,14 +41,14 @@
                     }
                 </Div>
             <Div Style="height:33%; min-width:100px; padding-top:20px; margin-left:10px; padding-right:10px;">
-                <span class="titleSpan">Studios:</span>:
+                <span class="titleSpan">Licensor:</span>:
                     <br />
                     @foreach (var lic in currentAnime.Licensors)
                 {
                     <span class="prodentSpan" @onclick="(args) => NavigateToProdEnt(lic.Mal_id)">@lic.Name, </span>
                 }</Div>
             <Div Style="height:33%; min-width:100px; padding-top:20px; margin-left:10px; padding-right:10px;">
-                <span class="titleSpan">Licensors:</span>:
+                <span class="titleSpan">Studios:</span>:
                 <br />
                 @foreach (var studio in currentAnime.Studios)
                 {

@@ -84,24 +84,24 @@
 
 
 @code {
-    [Parameter]
-    public int prodent_id { get; set; }
-    ProductionEntity currentProductionEntity {get; set;}
+        [Parameter]
+        public int prodent_id { get; set; }
+        ProductionEntity currentProductionEntity {get; set;}
 
-    List<Anime> producerAnimes = new List<Anime>();
-    List<Anime> licensorAnimes = new List<Anime>();
-    List<Anime> studioAnimes = new List<Anime>();
+        List<Anime> producerAnimes = new List<Anime>();
+        List<Anime> licensorAnimes = new List<Anime>();
+        List<Anime> studioAnimes = new List<Anime>();
 
-    List<Anime> currentlySelectedAnimes;
-    IEnumerable<Anime> currentlyViewedAnimes;
+        List<Anime> currentlySelectedAnimes;
+        IEnumerable<Anime> currentlyViewedAnimes;
 
-    String currentDateTimeString;
+        String currentDateTimeString;
 
-    RadzenPager pager;
-    string pagingSummaryFormat = "Displaying page {0} of {1} (total {2} records)";
-    int pageSize = 6;
-    int count;
-    int last_skip = 0;
+        RadzenPager pager;
+        string pagingSummaryFormat = "Displaying page {0} of {1} (total {2} records)";
+        int pageSize = 6;
+        int count;
+        int last_skip = 0;
 
 
     protected override async Task OnInitializedAsync()
@@ -113,7 +113,7 @@
         producerAnimes = await animeService.GetMultipleAnimes(await animeService.GetAnimesOfProducer(prodent_id));
         licensorAnimes = await animeService.GetMultipleAnimes(await animeService.GetAnimesOfLicensor(prodent_id));
         studioAnimes = await animeService.GetMultipleAnimes(await animeService.GetAnimesOfStudio(prodent_id));
-
+   
         if (studioAnimes.Count > 0) currentlySelectedAnimes = studioAnimes;
         else if (producerAnimes.Count > 0) currentlySelectedAnimes = producerAnimes;
         else currentlySelectedAnimes = licensorAnimes;

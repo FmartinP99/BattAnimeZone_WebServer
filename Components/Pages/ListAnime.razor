@@ -44,7 +44,7 @@
 
 
 
-<RadzenPager Style="overflow-x: clip; max-width: 75vw;" PagingSummaryFormat="@pagingSummaryFormat" ShowPagingSummary="true" HorizontalAlign="HorizontalAlign.Left" PageNumbersCount=@pagenumcount PageSize=@pageSize Count="count" PageChanged="@PageChanged" />
+<RadzenPager @ref=pager Style="overflow-x: clip; max-width: 75vw;" PagingSummaryFormat="@pagingSummaryFormat" ShowPagingSummary="true" HorizontalAlign="HorizontalAlign.Left" PageNumbersCount=@pagenumcount PageSize=@pageSize Count="count" PageChanged="@PageChanged" />
 
 @if (searched_animes.Count > 0){
 
@@ -83,7 +83,7 @@
         </RadzenRow>
     }
 }
-<RadzenPager Style="overflow-x: clip; max-width: 75vw;" PagingSummaryFormat="@pagingSummaryFormat" ShowPagingSummary="true" HorizontalAlign="HorizontalAlign.Left" PageNumbersCount=@pagenumcount PageSize=@pageSize Count="count" PageChanged="@PageChanged" />
+<RadzenPager @ref=pager2 Style="overflow-x: clip; max-width: 75vw;" PagingSummaryFormat="@pagingSummaryFormat" ShowPagingSummary="true" HorizontalAlign="HorizontalAlign.Left" PageNumbersCount=@pagenumcount PageSize=@pageSize Count="count" PageChanged="@PageChanged" />
 
 @code {
     Dictionary<int, int> animeCountPerGenre = new Dictionary<int, int>();
@@ -164,7 +164,8 @@
     int pagenumcount = 15;
     int last_skip = 0;
 
-
+    RadzenPager pager;
+    RadzenPager pager2;
 
     protected override async Task OnInitializedAsync()
     {
@@ -250,6 +251,8 @@
     {
         animes_per_page = searched_animes.Skip(args.Skip).Take(args.Top);
         last_skip = args.Skip;
+        pager.GoToPage(args.PageIndex);
+        pager2.GoToPage(args.PageIndex);
     }
 
     private void OnAnimesChanged(List<Anime> updatedAnimes)

@@ -62,7 +62,7 @@ else if (this.similar_animes == null || this.name == "" || this.name == null)
 
     protected override async Task OnInitializedAsync()
     {
-        GetSimilarAnimes();
+        await GetSimilarAnimes();
         base.OnInitialized();
     }
 
