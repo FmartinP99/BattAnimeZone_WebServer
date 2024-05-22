@@ -125,11 +125,11 @@ namespace BattAnimeZone.Services
 					Anime new_anime = new Anime
 					{
 						Mal_id = csv.GetField<int>("mal_id"),
-						Url = csv.GetField("url"),
+						//Url = csv.GetField("url"),
 						Title = csv.GetField("title"),
 						Title_english = csv.GetField("title_english"),
 						Title_japanese = csv.GetField("title_japanese"),
-						Ttile_synonyms = title_synonyms,
+						//Ttile_synonyms = title_synonyms,
 						Media_type = csv.GetField("type"),
 						Source = csv.GetField("source"),
 						Episodes = csv.GetField<float>("episodes"),
@@ -143,7 +143,7 @@ namespace BattAnimeZone.Services
 						Members = csv.GetField<float>("members"),
 						Favorites = csv.GetField<float>("favorites"),
 						Synopsis = csv.GetField("synopsis"),
-						Background = csv.GetField("background"),
+						//Background = csv.GetField("background"),
 						Season = csv.GetField("season"),
 						Year = csv.GetField<float>("year"),
 						Producers = producers,
@@ -152,21 +152,21 @@ namespace BattAnimeZone.Services
 						Genres = genres,
 						Themes = themes,
 						Relations = relations,
-						Externals = externals,
-						Streamings = streamings,
-						Image_jpg_url = csv.GetField("images.jpg.image_url"),
-						Image_small_jpg_url = csv.GetField("images.jpg.small_image_url"),
-						Image_large_jpg_url = csv.GetField("images.jpg.large_image_url"),
-						Image_webp_url = csv.GetField("images.webp.image_url"),
-						Image_small_webp_url = csv.GetField("images.webp.small_image_url"),
+						//Externals = externals,
+						//Streamings = streamings,
+						//Image_jpg_url = csv.GetField("images.jpg.image_url"),
+						//Image_small_jpg_url = csv.GetField("images.jpg.small_image_url"),
+						//Image_large_jpg_url = csv.GetField("images.jpg.large_image_url"),
+						//Image_webp_url = csv.GetField("images.webp.image_url"),
+						//Image_small_webp_url = csv.GetField("images.webp.small_image_url"),
 						Image_large_webp_url = csv.GetField("images.webp.large_image_url"),
-						Trailer_url = csv.GetField("trailer.url"),
-						Trailer_embed_url = csv.GetField("trailer.embed_url"),
-						Trailer_image_url = csv.GetField("trailer.images.image_url"),
-						Trailer_image_small_url = csv.GetField("trailer.images.small_image_url"),
-						Trailer_image_medium_url = csv.GetField("trailer.images.medium_image_url"),
-						Trailer_image_large_url = csv.GetField("trailer.images.large_image_url"),
-						Trailer_image_maximum_url = csv.GetField("trailer.images.maximum_image_url"),
+						//Trailer_url = csv.GetField("trailer.url"),
+						//Trailer_embed_url = csv.GetField("trailer.embed_url"),
+						//Trailer_image_url = csv.GetField("trailer.images.image_url"),
+						//Trailer_image_small_url = csv.GetField("trailer.images.small_image_url"),
+						//Trailer_image_medium_url = csv.GetField("trailer.images.medium_image_url"),
+						//Trailer_image_large_url = csv.GetField("trailer.images.large_image_url"),
+						//Trailer_image_maximum_url = csv.GetField("trailer.images.maximum_image_url"),
 						Aired_from_day = csv.GetField<float>("aired.prop.from.day"),
 						Aired_from_month = csv.GetField<float>("aired.prop.from.month"),
 						Aired_from_year = csv.GetField<float>("aired.prop.from.year"),
@@ -454,11 +454,13 @@ namespace BattAnimeZone.Services
 
 			foreach (Anime anime in this.animes.Values)
 			{
+				double default_distance = double.MaxValue;
 				double eng_distance = double.MaxValue;
 				double jp_distance = double.MaxValue;
-				if (anime.Title_english != "") eng_distance = distance_metric.Distance(name, anime.Title_english.ToLower());
+				if (anime.Title != "") default_distance = distance_metric.Distance(name, anime.Title_english.ToLower());
+				if (anime.Title_english != "") eng_distance = distance_metric.Distance(name, anime.Title_japanese.ToLower());
 				if (anime.Title_japanese != "") jp_distance = distance_metric.Distance(name, anime.Title_japanese.ToLower());
-				double min_distance = eng_distance < jp_distance ? eng_distance : jp_distance;
+				double min_distance = Math.Min(jp_distance, Math.Min(eng_distance, default_distance));
 				if (min_distance < 0.7) distances.Add(anime.Mal_id, min_distance);
 			}
 
