@@ -11,3 +11,12 @@ The program uses string-similarity comparsion to find similar animes for the <br
 - You can find the python script for it in the /Files folder.
 - All the data the program runs on is in the /Files folder.
 - The frontend was made by using [Radzen](https://blazor.radzen.com) components. 
+
+
+
+### Run
+
+- .NET8 Required
+- Download repository
+- Open the .sln
+- Run

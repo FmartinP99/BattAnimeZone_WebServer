@@ -14,6 +14,15 @@ builder.Services.AddScoped<Radzen.TooltipService>();
 builder.Services.AddScoped<Radzen.ContextMenuService>();
 builder.Services.AddScoped<Radzen.NotificationService>();
 
+builder.Services.AddHsts(options =>
+{
+    options.Preload = true;
+    options.IncludeSubDomains = true;
+    options.MaxAge = TimeSpan.FromDays(60);
+    options.ExcludedHosts.Add("example.com");
+    options.ExcludedHosts.Add("www.example.com");
+});
+
 
 var app = builder.Build();
 

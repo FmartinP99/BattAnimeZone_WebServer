@@ -30,7 +30,7 @@
     <RadzenColumn Style="min-width:100px;">
         <RadzenRow>
             <RadzenColumn> 
-                <RadzenPager @ref=pager Style="overflow-x: clip; " PagingSummaryFormat="@pagingSummaryFormat" ShowPagingSummary="true" HorizontalAlign="HorizontalAlign.Left" PageNumbersCount=5 PageSize=@pageSize Count="count" PageChanged="@PageChanged" />
+                <RadzenPager @ref=pager AlwaysVisible="true" Style="overflow-x: clip; " PagingSummaryFormat="@pagingSummaryFormat" ShowPagingSummary="true" HorizontalAlign="HorizontalAlign.Left" PageNumbersCount=5 PageSize=@pageSize Count="count" PageChanged="@PageChanged" />
             </RadzenColumn>
             <RadzenColumn class="rz-text-align-end">
                     @if (producerAnimes.Count > 0)
@@ -138,7 +138,7 @@
         {
             currentDateTimeString = "";
         }
-
+        
         base.OnInitialized();
     }
 

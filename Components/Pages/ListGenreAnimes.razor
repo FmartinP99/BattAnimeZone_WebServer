@@ -106,7 +106,6 @@ else
     
     private void OnAnimesChanged(List<Anime> updatedAnimes)
     {
-        Console.WriteLine("OnAnimesChanged called");
         animes = updatedAnimes;
         animes_per_page = animes.Skip(last_skip).Take(pageSize);
         StateHasChanged();
