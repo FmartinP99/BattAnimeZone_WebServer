@@ -1,6 +1,7 @@
 ﻿@using BattAnimeZone.Services
 @using BattAnimeZone.Components.Models.Genre
 @using BattAnimeZone.Components.Models.Anime
+@using BattAnimeZone.Components.Models.AnimeDTOs
 @inject NavigationManager navManager
 @inject AnimeService animeService
 @page "/"
@@ -25,7 +26,7 @@
 	</div>
 
 	<div class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2">
-		@foreach(Anime anime in this.currentlySelectedAnimes)
+		@foreach (AnimeHomePageDTO anime in this.currentlySelectedAnimes)
 		{
 			<div class="col-2">
 				<div class="card card-block card-1" @onclick="@(() => NavigateTo(anime.Mal_id))">
@@ -46,11 +47,11 @@
 
 @code{
 
-	IEnumerable<Anime> winterAnimes;
-	IEnumerable<Anime> springAnimes;
-	IEnumerable<Anime> summerAnimes;
-	IEnumerable<Anime> fallAnimes;
-	IEnumerable<Anime> currentlySelectedAnimes;
+	IEnumerable<AnimeHomePageDTO> winterAnimes;
+	IEnumerable<AnimeHomePageDTO> springAnimes;
+	IEnumerable<AnimeHomePageDTO> summerAnimes;
+	IEnumerable<AnimeHomePageDTO> fallAnimes;
+	IEnumerable<AnimeHomePageDTO> currentlySelectedAnimes;
 
 	string filter_str = "WINTER";
 	string info_str = "2024 Winter Animes";
@@ -58,7 +59,7 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		IEnumerable<Anime> animes = await animeService.GetAnimesByYear(2024);
+		IEnumerable<AnimeHomePageDTO> animes = await animeService.GetAnimesByYear(2024);
 		winterAnimes = animes.Where(anime => anime.Season == "winter");
 		springAnimes = animes.Where(anime => anime.Season == "spring");
 		summerAnimes = animes.Where(anime => anime.Season == "summer");
@@ -69,7 +70,7 @@
 	}
 
 
-	protected string GetTitle(Anime anime)
+	protected string GetTitle(AnimeHomePageDTO anime)
 	{
 		return anime.Title ?? anime.Title_english ?? anime.Title_japanese ?? "No Title Found!";
 	} 

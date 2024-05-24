@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Text;
 using F23.StringSimilarity;
 using BattAnimeZone.Components.Models.Anime;
+using BattAnimeZone.Components.Models.AnimeDTOs;
 using BattAnimeZone.Components.Models.ProductionEntity;
 using BattAnimeZone.Components.Models.Genre;
 using System.Collections;
@@ -14,11 +15,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using BattAnimeZone.Utilities;
+using AutoMapper;
 
 namespace BattAnimeZone.Services
 {
 	public class AnimeService
 	{
+
+		//mapper for AnimeDTO's
+		IMapper mapper;
+
+
 		private Dictionary<int, Anime> animes = new Dictionary<int, Anime> { };
 
         private Dictionary<int, ProductionEntity> productionEntities = new Dictionary<int, ProductionEntity> { };
@@ -35,6 +42,11 @@ namespace BattAnimeZone.Services
 
 		public AnimeService()
 		{
+			MapperConfiguration config = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>());
+			mapper = config.CreateMapper();
+
+
+
 			FillAnimesAndMedia();
 			FillProductionEntities();
 			FillProductionIdHashes();
@@ -380,11 +392,10 @@ namespace BattAnimeZone.Services
 		}
 
 
-		public Task<IEnumerable<Anime>> GetAnimesByYear(int year)
+		public Task<IEnumerable<AnimeHomePageDTO>> GetAnimesByYear(int year)
 		{
 			IEnumerable<Anime> animes_by_year = this.animes.Where(anime => anime.Value.Year == year).OrderBy(anime => anime.Value.Popularity).Select(anime => anime.Value);
-			return Task.FromResult(animes_by_year);
-
+			return Task.FromResult(mapper.Map<IEnumerable<AnimeHomePageDTO>>(animes_by_year));
 		}
 
 
