@@ -1,7 +1,6 @@
 ﻿@using BattAnimeZone.Services
-@using BattAnimeZone.Components.Models.Anime
-
-
+@using BattAnimeZone.Components.Models.AnimeDTOs
+@typeparam T where T : class, IAnimeDTO
 
 <RadzenLabel Text="Order by:" class="orderComponentText" Component="DropDownTextValueProperties" Style="margin-right: 8px; vertical-align: middle;" />
 <RadzenDropDown Change="onChanged" class="rzdropdown" @bind-Value=@filter_str Data=@filter_bys Style="width: 100%; max-width: 400px;" Name="DropDownTextValueProperties" />
@@ -16,9 +15,9 @@
     "Score", "Score Descending", "Popularity", "Popularity Descending", "Type", "Type Descending" };
 
     [Parameter]
-    public List<Anime> animes { get; set; }
+    public List<T> animes { get; set; }
     [Parameter]
-    public EventCallback<List<Anime>> AnimesChanged { get; set; }
+    public EventCallback<List<T>> AnimesChanged { get; set; }
 
 
 

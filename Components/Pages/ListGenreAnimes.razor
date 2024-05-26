@@ -1,6 +1,6 @@
 @using BattAnimeZone.Services
 @using BattAnimeZone.Components.Models.Genre
-@using BattAnimeZone.Components.Models.Anime
+@using BattAnimeZone.Components.Models.AnimeDTOs
 @inject AnimeService animeService
 @inject NavigationManager navManager
 <link rel="stylesheet" href="/ListGenreAnimes.css" />
@@ -16,11 +16,11 @@
             <RadzenPager Style="overflow-x: clip; "  PagingSummaryFormat="@pagingSummaryFormat" ShowPagingSummary="true" HorizontalAlign="HorizontalAlign.Left" PageNumbersCount=12 PageSize=@pageSize Count="count" PageChanged="@PageChanged" />
         </RadzenColumn>
         <RadzenColumn class="rz-text-align-end">
-            <OrderComponent animes="animes" AnimesChanged="OnAnimesChanged"></OrderComponent>
+            <OrderComponent T="LiGenreDTO" animes="animes" AnimesChanged="OnAnimesChanged"></OrderComponent>
         </RadzenColumn>
 </RadzenRow>
 
-    <RadzenDataList WrapItems="true" AllowPaging="false" Data="@animes_per_page" TItem="Anime">
+    <RadzenDataList WrapItems="true" AllowPaging="false" Data="@animes_per_page" TItem="LiGenreDTO">
         <Template Context="anime">
             <RadzenCard class="lga-card" @onclick="@(() => NavigateTo(anime.Mal_id))">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
@@ -65,8 +65,8 @@ else
     bool found = true;
     [Parameter]
     public int genreid { get; set; }
-    List<Anime> animes = new List<Anime>();
-    IEnumerable<Anime> animes_per_page = new List<Anime>();
+    List<LiGenreDTO> animes = new List<LiGenreDTO>();
+    IEnumerable<LiGenreDTO> animes_per_page = new List<LiGenreDTO>();
     string pagingSummaryFormat = "Displaying page {0} of {1} (total {2} records)";
     int pageSize = 9;
     int count;
@@ -78,7 +78,7 @@ else
     protected override async Task OnInitializedAsync()
     {
 
-        animes = await animeService.GetAnimesPerGenre(genreid);
+        animes = await animeService.GetAnimesForListGenreAnimes(genreid);
         if (animes[0].Mal_id != -1)
         {
             found = true;
@@ -104,7 +104,7 @@ else
         last_skip = args.Skip;
     }
     
-    private void OnAnimesChanged(List<Anime> updatedAnimes)
+    private void OnAnimesChanged(List<LiGenreDTO> updatedAnimes)
     {
         animes = updatedAnimes;
         animes_per_page = animes.Skip(last_skip).Take(pageSize);

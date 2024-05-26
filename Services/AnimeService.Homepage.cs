@@ -1,0 +1,14 @@
+﻿using BattAnimeZone.Components.Models.Anime;
+using BattAnimeZone.Components.Models.AnimeDTOs;
+
+namespace BattAnimeZone.Services
+{
+    public partial class AnimeService
+    {
+        public Task<IEnumerable<AnimeHomePageDTO>> GetAnimesForHomePageByYear(int year)
+        {
+            IEnumerable<Anime> animes_by_year = this.animes.Where(anime => anime.Value.Year == year).OrderBy(anime => anime.Value.Popularity).Select(anime => anime.Value);
+            return Task.FromResult(mapper.Map<IEnumerable<AnimeHomePageDTO>>(animes_by_year));
+        }
+    }
+}

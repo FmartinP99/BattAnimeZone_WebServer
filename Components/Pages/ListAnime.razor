@@ -1,6 +1,7 @@
 @using BattAnimeZone.Services
 @using BattAnimeZone.Components.Models.Genre
 @using BattAnimeZone.Components.Models.Anime
+@using BattAnimeZone.Components.Models.AnimeDTOs
 @inject NavigationManager navManager
 @inject AnimeService animeService
 <link rel="stylesheet" href="/ListAnime.css" />
@@ -39,7 +40,7 @@
 @if (searched_animes.Count > 0)
 {
     <RadzenColumn class="rz-text-align-end">
-    <OrderComponent animes="searched_animes" AnimesChanged="OnAnimesChanged"></OrderComponent>
+    <OrderComponent T="LiAnimeDTO" animes="searched_animes" AnimesChanged="OnAnimesChanged"></OrderComponent>
     </RadzenColumn>
 
 
@@ -51,7 +52,7 @@
 
 
 
-    @foreach (Anime anime in animes_per_page)
+    @foreach (LiAnimeDTO anime in animes_per_page)
     {
         <RadzenRow @onclick=@(() => NavigateTo(anime.Mal_id)) Style="height:100px; margin-bottom: 30px;">
             <RadzenColumn Style="max-width:100px; ">
@@ -148,16 +149,15 @@
 
 
 
-
     Dictionary<int, HashSet<int>> animesPerGenreIDs;
-    List<Anime> searched_animes = new List<Anime>();
+    List<LiAnimeDTO> searched_animes = new List<LiAnimeDTO>();
 
     Dictionary<string, HashSet<int>> animesPerMediaTypeIDs;
     List<string> media_types;
     List<string> selected_medias = new List<string>();
 
 
-    IEnumerable<Anime> animes_per_page = new List<Anime>();
+    IEnumerable<LiAnimeDTO> animes_per_page = new List<LiAnimeDTO>();
     string pagingSummaryFormat = "Displaying page {0} of {1} (total {2} records)";
     int pageSize = 10;
     int count;
@@ -187,7 +187,6 @@
             .ToList();
 
         animesPerMediaTypeIDs = await animeService.GetAnimesPerMediaTypeIds();
-
         await base.OnInitializedAsync();
 
     }
@@ -242,11 +241,12 @@
             }
         }
 
-        searched_animes = await animeService.GetMultipleAnimes(found_animes);
+        searched_animes = await animeService.GetAnimesForListAnime(found_animes);
         searched_animes = searched_animes.OrderByDescending(anim => anim.Score).ToList();
         animes_per_page = searched_animes.Take(pageSize);
         count = searched_animes.Count;
     }
+
 
     void PageChanged(PagerEventArgs args)
     {
@@ -256,7 +256,7 @@
         pager2.GoToPage(args.PageIndex);
     }
 
-    private void OnAnimesChanged(List<Anime> updatedAnimes)
+    private void OnAnimesChanged(List<LiAnimeDTO> updatedAnimes)
     {
         Console.WriteLine("OnAnimesChanged called");
         searched_animes = updatedAnimes;

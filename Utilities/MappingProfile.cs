@@ -9,6 +9,8 @@ namespace BattAnimeZone.Utilities
 		public MappingProfile()
 		{
 			CreateMap<Anime, AnimeHomePageDTO>();
+			CreateMap<Anime, LiAnimeDTO>();
+			CreateMap<Anime, LiGenreDTO>();
 		}
 
 	}

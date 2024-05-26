@@ -19,7 +19,7 @@ using AutoMapper;
 
 namespace BattAnimeZone.Services
 {
-	public class AnimeService
+	public partial class AnimeService
 	{
 
 		//mapper for AnimeDTO's
@@ -350,16 +350,6 @@ namespace BattAnimeZone.Services
 			this.animesPerMediaTypeIdsHash = tempApM;
         }
 
-
-        public async Task<List<Anime>> GetAnimesPerGenre(int genre_id)
-		{
-			List<Anime> return_apg;
-			if (this.animesPerGenre.TryGetValue(genre_id, out return_apg)) return return_apg;
-			Anime fake = new Anime();
-			return new List<Anime> { fake };
-		}
-
-
 		public Task<Dictionary<int, Anime>> GetAllAnimes()
 		{
 			return Task.FromResult(this.animes);
@@ -390,14 +380,6 @@ namespace BattAnimeZone.Services
 			}
 			return animelist;
 		}
-
-
-		public Task<IEnumerable<AnimeHomePageDTO>> GetAnimesByYear(int year)
-		{
-			IEnumerable<Anime> animes_by_year = this.animes.Where(anime => anime.Value.Year == year).OrderBy(anime => anime.Value.Popularity).Select(anime => anime.Value);
-			return Task.FromResult(mapper.Map<IEnumerable<AnimeHomePageDTO>>(animes_by_year));
-		}
-
 
 		public Task<Dictionary<int, AnimeGenre>> GetGenres()
 		{

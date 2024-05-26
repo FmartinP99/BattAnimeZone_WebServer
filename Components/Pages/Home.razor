@@ -59,7 +59,7 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		IEnumerable<AnimeHomePageDTO> animes = await animeService.GetAnimesByYear(2024);
+		IEnumerable<AnimeHomePageDTO> animes = await animeService.GetAnimesForHomePageByYear(2024);
 		winterAnimes = animes.Where(anime => anime.Season == "winter");
 		springAnimes = animes.Where(anime => anime.Season == "spring");
 		summerAnimes = animes.Where(anime => anime.Season == "summer");
