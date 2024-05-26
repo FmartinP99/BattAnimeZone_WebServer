@@ -1,19 +1,9 @@
 ﻿using CsvHelper;
 using Newtonsoft.Json;
 using System.Globalization;
-using System.Text;
-using F23.StringSimilarity;
 using BattAnimeZone.Components.Models.Anime;
-using BattAnimeZone.Components.Models.AnimeDTOs;
 using BattAnimeZone.Components.Models.ProductionEntity;
 using BattAnimeZone.Components.Models.Genre;
-using System.Collections;
-using BattAnimeZone.Components.Pages;
-using System.Runtime.CompilerServices;
-using System.ComponentModel;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
 using BattAnimeZone.Utilities;
 using AutoMapper;
 
@@ -360,7 +350,6 @@ namespace BattAnimeZone.Services
 			Anime return_anime;
 			if (this.animes.TryGetValue(mal_id, out return_anime)) return return_anime;
 			return new Anime();
-
 		}
 
 		public Anime GetAnimeByIDSync(int mal_id)
@@ -434,26 +423,6 @@ namespace BattAnimeZone.Services
             if (this.animesPerStudioIdHash.TryGetValue(prodid, out animes)) return Task.FromResult(animes);
             return Task.FromResult(new HashSet<int>());
         }
-
-		public async Task<List<Anime>> GetRelations(Anime anime)
-		{
-
-			List<Anime> relational_animes = new List<Anime>();
-
-			foreach (var relation in anime.Relations)
-			{
-				foreach (var entry in relation.Entry)
-				{
-					if (entry.Type == "anime")
-					{
-						relational_animes.Add(await this.GetAnimeByID(entry.Mal_id));
-					}
-
-
-				}
-			}
-			return relational_animes;
-		}
 
 		public async Task<Dictionary<int, HashSet<int>>> GetAnimesPerGenreIds()
 		{

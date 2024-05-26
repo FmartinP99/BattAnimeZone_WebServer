@@ -1,5 +1,5 @@
 @inject NavigationManager navManager
-@using BattAnimeZone.Components.Models.Anime
+@using BattAnimeZone.Components.Models.AnimeDTOs
 @using BattAnimeZone.Services
 @inject AnimeService animeService
 @page "/anime/{mal_id:int}"
@@ -23,14 +23,20 @@
             <div class="rowDiv"><span class="titleSpan">Type:</span><br />@currentAnime.Media_type</div>
         </RadzenColumn>
          <RadzenColumn Style="min-width:200px; max-width:20vh;">
-            <div class="rowDiv"><span class="titleSpan">Score:</span><br />@currentAnime.Score</div>
             <div class="rowDiv"><span class="titleSpan">Airing:</span><br />@currentAnime.Status</div>
+            <div class="rowDiv"><span class="titleSpan">Season:</span><br />@currentAnime.Season</div>
             <div class="rowDiv"><span class="titleSpan">Aired:</span><br />@currentAnime.Aired_string</div>
          </RadzenColumn>
         <RadzenColumn Style="min-width:200px; max-width:20vh;">
+            <div class="rowDiv"><span class="titleSpan">Rank:</span><br />@currentAnime.Rank</div>
+            <div class="rowDiv"><span class="titleSpan">Score:</span><br />@currentAnime.Score</div>
             <div class="rowDiv"><span class="titleSpan">Popularity:</span><br />@currentAnime.Popularity</div>
+        </RadzenColumn>
+
+        <RadzenColumn Style="min-width:200px; max-width:20vh;">
             <div class="rowDiv"><span class="titleSpan">Genres:</span><br />@string.Join(",\n", currentAnime.Genres.Select(g => g.Name))</div>
             <div class="rowDiv"><span class="titleSpan">Themes:</span><br />@string.Join(",\n", currentAnime.Themes.Select(g => g.Name))</div>
+            <div class="rowDiv"><span class="titleSpan">Duration:</span><br />@currentAnime.Duration</div>
         </RadzenColumn>
         <RadzenColumn Style="min-width:300px; max-width:20vh;">
             <Div Style="height:33%; min-width:100px; padding-top:20px; margin-left:10px; padding-right:10px;">
@@ -61,34 +67,30 @@
  
    
     <div class="synopsisHeaderDiv titleSpan">
-        Synopsis:
+            Synopsis:
+            <hr />
+        <div class="synopsisDiv">
+            @currentAnime.Synopsis
+        </div>
         <hr />
-    <div class="synopsisDiv">
-        @currentAnime.Synopsis
     </div>
-    <hr />
- </div>
-
 
 </div>
 @code{
     [Parameter]
     public int mal_id { get; set; }
-    Anime currentAnime;
-    IList<Anime> relational_animes;
+    AnimePageDTO currentAnime;
 
     protected override async Task OnInitializedAsync()
     {
-
         getCurrentAnime();
         if (currentAnime.Mal_id == -1) return;
-        getRelationalAnimes(currentAnime);
         base.OnInitialized();
     }
 
     protected async Task getCurrentAnime()
     {
-        currentAnime = await animeService.GetAnimeByID(mal_id);
+        currentAnime = await animeService.GetAnimePageDTOByID(mal_id);
 
     }
 
@@ -119,10 +121,6 @@
         navManager.NavigateTo($"/anime/{mal_id}/relations", forceLoad: true);
     }
 
-    protected async Task getRelationalAnimes(Anime anime)
-    {
-        relational_animes = await animeService.GetRelations(anime);
-    }
 
   
 

@@ -1,5 +1,6 @@
 ﻿@inject NavigationManager navManager
 @using BattAnimeZone.Components.Models.Anime
+@using BattAnimeZone.Components.Models.AnimeDTOs
 @using BattAnimeZone.Services
 @inject AnimeService animeService
 @page "/anime/{mal_id:int}/relations"
@@ -13,7 +14,7 @@
 
 @if (relational_animes != null && relational_animes.Count > 0)
 {
-    <RadzenDataList WrapItems="true" AllowPaging="false" Data="@relational_animes_per_page" TItem="Anime">
+    <RadzenDataList WrapItems="true" AllowPaging="false" Data="@relational_animes_per_page" TItem="AnimeRelationDTO">
         <Template Context="anime">
             <RadzenCard class="lga-card" @onclick="@(() => NavigateTo(anime.Mal_id))">
                 <RadzenStack Style="height:70%" Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
@@ -67,9 +68,9 @@ else
 @code {
     [Parameter]
     public int mal_id { get; set; }
-    Anime currentAnime;
-    List<Anime>? relational_animes;
-    IEnumerable<Anime>? relational_animes_per_page;
+    AnimeRelationsKeyDTO currentAnime;
+    List<AnimeRelationDTO>? relational_animes;
+    IEnumerable<AnimeRelationDTO>? relational_animes_per_page;
     string pagingSummaryFormat = "Displaying page {0} of {1} (total {2} records)";
     int pageSize = 9;
     int count;
@@ -90,11 +91,11 @@ else
 
     protected async Task getCurrentAnime()
     {
-        currentAnime = await animeService.GetAnimeByID(mal_id);
+        currentAnime = await animeService.GetAnimeRelationsKeyByID(mal_id);
     }
 
 
-    protected async Task getRelationalAnimes(Anime anime)
+    protected async Task getRelationalAnimes(AnimeRelationsKeyDTO anime)
     {
         relational_animes = await animeService.GetRelations(anime);
     }
