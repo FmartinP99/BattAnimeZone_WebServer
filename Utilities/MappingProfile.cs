@@ -11,6 +11,7 @@ namespace BattAnimeZone.Utilities
 			CreateMap<Anime, AnimeHomePageDTO>();
 			CreateMap<Anime, LiAnimeDTO>();
 			CreateMap<Anime, LiGenreDTO>();
+			CreateMap<Anime, AnimeSearchResultDTO>();
 		}
 
 	}

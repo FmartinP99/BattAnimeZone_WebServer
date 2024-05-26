@@ -1,5 +1,5 @@
 @inject NavigationManager navManager
-@using BattAnimeZone.Components.Models.Anime
+@using BattAnimeZone.Components.Models.AnimeDTOs
 @using BattAnimeZone.Services
 @inject AnimeService animeService
 @page "/search/"
@@ -13,7 +13,7 @@
 
 @if (this.similar_animes != null){
 <div class="display-div">
-@foreach (Anime similar_anime in this.similar_animes)
+        @foreach (AnimeSearchResultDTO similar_anime in this.similar_animes)
 {
     
             <RadzenRow @onclick=@(() => NavigateTo(similar_anime.Mal_id)) Style="height:100px; margin-bottom: 30px;">
@@ -57,7 +57,7 @@ else if (this.similar_animes == null || this.name == "" || this.name == null)
 @code {
     [Parameter]
     public string name { get; set; } = "";
-    List<Anime> similar_animes;
+    List<AnimeSearchResultDTO> similar_animes;
     int similar_anime_number = 20;
 
     protected override async Task OnInitializedAsync()
@@ -69,7 +69,7 @@ else if (this.similar_animes == null || this.name == "" || this.name == null)
     protected async Task GetSimilarAnimes()
     {
         if (this.name == "" || this.name == null) return;
-        this.similar_animes = await animeService.GetSimilarAnimes(this.similar_anime_number, this.name);
+        this.similar_animes = await animeService.GetSimilarAnimesForSearchResult(this.similar_anime_number, this.name);
         this.similar_animes = this.similar_animes.OrderByDescending(anime => anime.Score).ToList();
     }
 
