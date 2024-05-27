@@ -5,11 +5,11 @@ namespace BattAnimeZone.Services
 {
     public partial class AnimeService
     {
-        public async Task<List<LiGenreDTO>> GetAnimesForListGenreAnimes(int genre_id)
+        public async Task<List<LiGenreAnimeDTO>> GetAnimesForListGenreAnimes(int genre_id)
         {
             List<Anime> apgs;
-            if (this.animesPerGenre.TryGetValue(genre_id, out apgs)) return mapper.Map<List<LiGenreDTO>>(apgs);
-            return new List<LiGenreDTO> { new LiGenreDTO() };
+            if (this.animesPerGenre.TryGetValue(genre_id, out apgs)) return mapper.Map<List<LiGenreAnimeDTO>>(apgs);
+            return new List<LiGenreAnimeDTO> { new LiGenreAnimeDTO() };
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace BattAnimeZone.Components.Models.AnimeDTOs
 {
-    public class LiGenreDTO : IAnimeDTO
+    public class LiGenreAnimeDTO : IAnimeDTO
     {
         public int Mal_id { get; set; } = -1;
         public string Title_english { get; set; } = string.Empty;
