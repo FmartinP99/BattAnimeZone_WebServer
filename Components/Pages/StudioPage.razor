@@ -1,5 +1,5 @@
 ﻿@inject NavigationManager navManager
-@using BattAnimeZone.Components.Models.Anime
+@using BattAnimeZone.Components.Models.AnimeDTOs
 @using BattAnimeZone.Components.Models.ProductionEntity
 @using BattAnimeZone.Services
 @using System.Globalization
@@ -58,7 +58,7 @@
         </RadzenRow>
 
         <RadzenRow>
-            <RadzenDataList WrapItems="true" AllowPaging="false" Data="@currentlyViewedAnimes" TItem="Anime">
+                <RadzenDataList WrapItems="true" AllowPaging="false" Data="@currentlyViewedAnimes" TItem="AnimeStudioPageDTO">
                 <Template Context="anime">
                     <RadzenCard class="lga-card" @onclick="@(() => NavigateTo(anime.Mal_id))">
                         <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
@@ -97,12 +97,12 @@
     public int prodent_id { get; set; }
     ProductionEntity currentProductionEntity {get; set;}
 
-    List<Anime> producerAnimes = new List<Anime>();
-    List<Anime> licensorAnimes = new List<Anime>();
-    List<Anime> studioAnimes = new List<Anime>();
+    List<AnimeStudioPageDTO> producerAnimes = new List<AnimeStudioPageDTO>();
+    List<AnimeStudioPageDTO> licensorAnimes = new List<AnimeStudioPageDTO>();
+    List<AnimeStudioPageDTO> studioAnimes = new List<AnimeStudioPageDTO>();
 
-    List<Anime> currentlySelectedAnimes;
-    IEnumerable<Anime> currentlyViewedAnimes;
+    List<AnimeStudioPageDTO> currentlySelectedAnimes;
+    IEnumerable<AnimeStudioPageDTO> currentlyViewedAnimes;
 
     String currentDateTimeString;
 
@@ -119,9 +119,9 @@
         currentProductionEntity = await animeService.GetProductionEntityById(prodent_id);
         if (currentProductionEntity.Mal_id == -1) return;
 
-        producerAnimes = await animeService.GetMultipleAnimes(await animeService.GetAnimesOfProducer(prodent_id));
-        licensorAnimes = await animeService.GetMultipleAnimes(await animeService.GetAnimesOfLicensor(prodent_id));
-        studioAnimes = await animeService.GetMultipleAnimes(await animeService.GetAnimesOfStudio(prodent_id));
+        producerAnimes = await animeService.GetProducedAnimes(prodent_id);
+        licensorAnimes = await animeService.GetLicensedAnimes(prodent_id);
+        studioAnimes = await animeService.GetStudioAnimes(prodent_id);
 
         if (studioAnimes.Count > 0) currentlySelectedAnimes = studioAnimes;
         else if (producerAnimes.Count > 0) currentlySelectedAnimes = producerAnimes;

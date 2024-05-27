@@ -34,7 +34,7 @@ namespace BattAnimeZone.Services
             {
                 return_Animes.Add(await this.GetAnimeByID(id));
             }
-            return mapper.Map<List<AnimeSearchResultDTO>>(return_Animes);
+            return animeMapper.Map<List<AnimeSearchResultDTO>>(return_Animes);
         }
     }
 }

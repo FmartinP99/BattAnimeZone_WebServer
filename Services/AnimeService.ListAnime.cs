@@ -13,7 +13,7 @@ namespace BattAnimeZone.Services
                 animelist.Add(await GetAnimeByID(id));
             }
 
-            return mapper.Map<List<LiAnimeDTO>>(animelist);
+            return animeMapper.Map<List<LiAnimeDTO>>(animelist);
         }
     }
 }

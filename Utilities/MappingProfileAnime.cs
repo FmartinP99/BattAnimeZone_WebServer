@@ -4,9 +4,9 @@ using BattAnimeZone.Components.Models.AnimeDTOs;
 
 namespace BattAnimeZone.Utilities
 {
-	public class MappingProfile : Profile
+	public class MappingProfileAnime : Profile
 	{
-		public MappingProfile()
+		public MappingProfileAnime()
 		{
 			CreateMap<Anime, AnimeHomePageDTO>();
 			CreateMap<Anime, AnimePageDTO>();
@@ -15,6 +15,7 @@ namespace BattAnimeZone.Utilities
 			CreateMap<Anime, AnimeSearchResultDTO>();
 			CreateMap<Anime, AnimeRelationsKeyDTO>();
 			CreateMap<Anime, AnimeRelationDTO>();
+			CreateMap<Anime, AnimeStudioPageDTO>();
 		}
 
 	}

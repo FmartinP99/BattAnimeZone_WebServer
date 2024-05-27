@@ -13,7 +13,9 @@ namespace BattAnimeZone.Services
 	{
 
 		//mapper for AnimeDTO's
-		IMapper mapper;
+		IMapper animeMapper;
+		IMapper productionEntityMapper;
+	
 
 
 		private Dictionary<int, Anime> animes = new Dictionary<int, Anime> { };
@@ -32,12 +34,14 @@ namespace BattAnimeZone.Services
 
 		public AnimeService()
 		{
-			MapperConfiguration config = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>());
-			mapper = config.CreateMapper();
+			MapperConfiguration config = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfileAnime>());
+			animeMapper = config.CreateMapper();
+
+            MapperConfiguration config2 = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfileProductionEntity>());
+            productionEntityMapper = config2.CreateMapper();
 
 
-
-			FillAnimesAndMedia();
+            FillAnimesAndMedia();
 			FillProductionEntities();
 			FillProductionIdHashes();
 			FillGenres();
@@ -360,24 +364,9 @@ namespace BattAnimeZone.Services
 
 		}
 
-		public async Task<List<Anime>> GetMultipleAnimes(HashSet<int> ids)
-		{
-			List<Anime> animelist = new List<Anime>();
-			foreach (int id in ids)
-			{
-				animelist.Add(await GetAnimeByID(id));
-			}
-			return animelist;
-		}
-
 		public Task<Dictionary<int, AnimeGenre>> GetGenres()
 		{
 			return Task.FromResult(this.genres);
-		}
-
-		public Task<Dictionary<int, ProductionEntity>> GetProductionEntities()
-		{
-			return Task.FromResult(this.productionEntities);
 		}
 
         public async Task<ProductionEntity> GetProductionEntityById(int prodid)

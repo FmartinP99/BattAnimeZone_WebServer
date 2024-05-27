@@ -1,5 +1,5 @@
 ﻿@using BattAnimeZone.Services
-@using BattAnimeZone.Components.Models.ProductionEntity
+@using BattAnimeZone.Components.Models.ProductionEntityDTOs
 @inject NavigationManager navManager
 @inject AnimeService animeService
 <link rel="stylesheet" href="/ListStudio.css" />
@@ -12,7 +12,7 @@
         <RadzenPager Style="overflow-x: clip; " PagingSummaryFormat="@pagingSummaryFormat" ShowPagingSummary="true" HorizontalAlign="HorizontalAlign.Left" PageNumbersCount=12 PageSize=@pageSize Count="count" PageChanged="@PageChanged" />
     </RadzenColumn>
 </RadzenRow>
-<RadzenDataList WrapItems="true" AllowPaging="false" Data="@prodents_per_page" TItem="ProductionEntity">
+<RadzenDataList WrapItems="true" AllowPaging="false" Data="@prodents_per_page" TItem="LiProductionEntityDTO">
     <Template Context="prodent">
         <RadzenCard class="lga-card" @onclick="@(() => NavigateTo(prodent.Mal_id))">
             <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
@@ -37,8 +37,8 @@
 
 @code {
 
-    List<ProductionEntity> productionEntities;
-    IEnumerable<ProductionEntity> prodents_per_page;
+    List<LiProductionEntityDTO> productionEntities;
+    IEnumerable<LiProductionEntityDTO> prodents_per_page;
     string pagingSummaryFormat = "Displaying page {0} of {1} (total {2} records)";
     int pageSize = 10;
     int count;
@@ -54,7 +54,7 @@
         base.OnInitialized();
     }
 
-    private string GetTitle(ProductionEntity prodent, string keyword)
+    private string GetTitle(LiProductionEntityDTO prodent, string keyword)
     {
         var prodtitle = prodent.Titles.FirstOrDefault(title => title.Type == keyword);
         var defaultTitle = prodent.Titles.FirstOrDefault(title => title.Type == "Default");
