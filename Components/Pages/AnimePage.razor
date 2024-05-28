@@ -34,13 +34,31 @@
         </RadzenColumn>
 
         <RadzenColumn Style="min-width:200px; max-width:20vh;">
-            <div class="rowDiv"><span class="titleSpan">Genres:</span><br />@string.Join(",\n", currentAnime.Genres.Select(g => g.Name))</div>
-            <div class="rowDiv"><span class="titleSpan">Themes:</span><br />@string.Join(",\n", currentAnime.Themes.Select(g => g.Name))</div>
             <div class="rowDiv"><span class="titleSpan">Duration:</span><br />@currentAnime.Duration</div>
+
+              <Div class="rowDiv">
+                <span class="titleSpan">Genres:</span>
+                   <br />
+                        @foreach (var genre in currentAnime.Genres)
+                    {
+                    <span class="prodentSpan" @onclick="(args) => NavigateToGenre(genre.Mal_id)">@genre.Name, </span>
+                    }
+                </Div>
+
+
+            <Div class="rowDiv">
+                <span class="titleSpan">Themes:</span>
+                   <br />
+                        @foreach (var theme in currentAnime.Themes)
+                    {
+                    <span class="prodentSpan" @onclick="(args) => NavigateToGenre(theme.Mal_id)">@theme.Name, </span>
+                    }
+                </Div>
+            
         </RadzenColumn>
         <RadzenColumn Style="min-width:300px; max-width:20vh;">
             <Div Style="height:33%; min-width:100px; padding-top:20px; margin-left:10px; padding-right:10px;">
-                <span class="titleSpan">Producers:</span>:
+                <span class="titleSpan">Producers:</span>
                    <br />
                         @foreach (var prod in currentAnime.Producers)
                     {
@@ -48,14 +66,14 @@
                     }
                 </Div>
             <Div Style="height:33%; min-width:100px; padding-top:20px; margin-left:10px; padding-right:10px;">
-                <span class="titleSpan">Licensors:</span>:
+                <span class="titleSpan">Licensors:</span>
                     <br />
                     @foreach (var lic in currentAnime.Licensors)
                 {
                     <span class="prodentSpan" @onclick="(args) => NavigateToProdEnt(lic.Mal_id)">@lic.Name, </span>
                 }</Div>
             <Div Style="height:33%; min-width:100px; padding-top:20px; margin-left:10px; padding-right:10px;">
-                <span class="titleSpan">Studios:</span>:
+                <span class="titleSpan">Studios:</span>
                 <br />
                 @foreach (var studio in currentAnime.Studios)
                 {
@@ -119,6 +137,11 @@
     protected void NavigateToRelationsPage()
     {
         navManager.NavigateTo($"/anime/{mal_id}/relations", forceLoad: true);
+    }
+
+    protected void NavigateToGenre(int genre_id)
+    {
+        navManager.NavigateTo($"/genrelist/{genre_id}", forceLoad: true);
     }
 
 
