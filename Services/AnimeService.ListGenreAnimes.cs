@@ -11,5 +11,11 @@ namespace BattAnimeZone.Services
             if (this.animesPerGenre.TryGetValue(genre_id, out apgs)) return animeMapper.Map<List<LiGenreAnimeDTO>>(apgs);
             return new List<LiGenreAnimeDTO> { new LiGenreAnimeDTO() };
         }
+
+        public async Task<string> GetGenreNameById(int genre_id)
+        {
+            return this.genres[genre_id].Name;
+        }
+
     }
 }

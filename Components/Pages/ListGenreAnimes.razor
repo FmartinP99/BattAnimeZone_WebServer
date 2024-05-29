@@ -11,6 +11,9 @@
 
 @if (found)
 {
+
+    <div class="genreNameDiv">Genre: @genrename</div>
+
     <RadzenRow Style="width:100%; display:flex;">
         <RadzenColumn Style="min-width:62%;">
             <RadzenPager Style="overflow-x: clip; "  PagingSummaryFormat="@pagingSummaryFormat" ShowPagingSummary="true" HorizontalAlign="HorizontalAlign.Left" PageNumbersCount=12 PageSize=@pageSize Count="count" PageChanged="@PageChanged" />
@@ -65,9 +68,10 @@ else
     bool found = true;
     [Parameter]
     public int genreid { get; set; }
+    string genrename;
     List<LiGenreAnimeDTO> animes = new List<LiGenreAnimeDTO>();
     IEnumerable<LiGenreAnimeDTO> animes_per_page = new List<LiGenreAnimeDTO>();
-    string pagingSummaryFormat = "Displaying page {0} of {1} (total {2} records)";
+    string pagingSummaryFormat;
     int pageSize = 9;
     int count;
     int last_skip = 0;
@@ -79,6 +83,9 @@ else
     {
 
         animes = await animeService.GetAnimesForListGenreAnimes(genreid);
+        genrename = await animeService.GetGenreNameById(genreid);
+        pagingSummaryFormat = $"Displaying page {{0}} of {{1}} (total {{2}} records of {genrename} animes)";
+
         if (animes[0].Mal_id != -1)
         {
             found = true;
