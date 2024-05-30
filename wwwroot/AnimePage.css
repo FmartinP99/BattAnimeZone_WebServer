@@ -29,6 +29,11 @@
     display:inline;
 }
 
+.titleLanguage{
+    font-weight:900;
+    font-size: 13px;
+}
+
 .rowDiv {
     height: 33%;
     min-width: 100px;

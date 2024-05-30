@@ -18,7 +18,15 @@
 <RadzenRow Style="height:500px; flex:auto; margin-bottom:20px;">
         <RadzenImage Style="display: block; max-width: 300px; max-height: 500px; height:auto; width:auto;" Path="@currentAnime.Image_large_webp_url"></RadzenImage>
         <RadzenColumn Style="min-width:300px; max-width:20vh; margin-left:20px;">
-            <div class="rowDiv"><span class="titleSpan">Name(s):</span><br />@TruncateTitles(currentAnime.Title_english, 70)<br /><hr />@TruncateTitles(currentAnime.Title_japanese, 50) </div>
+            <div class="rowDiv"><span class="titleSpan">Name(s):</span><br />
+                @if (currentAnime.Title_english.Length > 0){
+                <span class="titleLanguage">ENG: </span>@TruncateTitles(currentAnime.Title_english, 70)
+                <br /> 
+                }
+                @if(currentAnime.Title_japanese.Length > 0){
+                <span class="titleLanguage">JP: </span>@TruncateTitles(currentAnime.Title_japanese, 50) 
+                }</div>
+            
             <div class="rowDiv"><span class="titleSpan">Episodes:</span><br />@currentAnime.Episodes</div>
             <div class="rowDiv"><span class="titleSpan">Type:</span><br />@currentAnime.Media_type</div>
         </RadzenColumn>
