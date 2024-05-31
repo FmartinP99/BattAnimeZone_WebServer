@@ -15,6 +15,7 @@
         public float Rank { get; set; } = -1;
         public float Popularity { get; set; } = -1;
         public string Synopsis { get; set; } = string.Empty;
+        public string Background { get; set; } = string.Empty;
         public string Season { get; set; } = string.Empty;
         public float Year { get; set; } = -1;
         public List<Producer> Producers { get; set; }

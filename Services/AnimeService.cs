@@ -149,7 +149,7 @@ namespace BattAnimeZone.Services
 						Members = csv.GetField<float>("members"),
 						Favorites = csv.GetField<float>("favorites"),
 						Synopsis = csv.GetField("synopsis"),
-						//Background = csv.GetField("background"),
+						Background = csv.GetField("background"),
 						Season = csv.GetField("season"),
 						Year = csv.GetField<float>("year"),
 						Producers = producers,
