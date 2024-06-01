@@ -124,6 +124,7 @@
         getCurrentAnime();
         if (currentAnime.Mal_id == -1) return;
         //make the first character of the Season  uppercase
+        if(currentAnime.Season.Length > 0)
         currentAnime.Season = char.ToUpper(currentAnime.Season[0]) + currentAnime.Season.Substring(1);
         base.OnInitialized();
     }
